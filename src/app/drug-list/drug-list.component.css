@@ -1,0 +1,280 @@
+.body-bg {
+  background-color: #e4fcf8 !important;
+}
+
+:host ::ng-deep .mat-grid-tile-content {
+  align-items: baseline !important;
+}
+
+/* facet list */
+.sidebar {
+  width: 100%;
+  /*background: #424f60 !important;*/
+  margin: -1em;
+  padding: 2em;
+  overflow: scroll;
+}
+
+h3.facetlist {
+  font-size: 1em;
+  font-weight: 700;
+  color: #000;
+}
+
+.facet-table {
+  width: 100%;
+  color: #424f60;
+  margin-bottom: 2em;
+}
+
+.filter-count {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  float: right;
+}
+
+td.count {
+  text-align: right;
+}
+
+a.facet-label {
+  color: #424f60;
+  cursor: pointer;
+}
+
+a.facet-label:hover {
+  text-decoration: underline;
+}
+
+a.facet-filter, a.facet-filter:visited {
+    border-bottom: 1px solid #d9d9d9;
+    cursor: pointer;
+}
+
+a.facet-filter:hover {
+  color: #4e9dd0;
+}
+
+td.facet-nameX {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+  width: 90%;
+}
+
+/* drug list */
+.drug-list {
+  background-color: #fff;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+a.drug-link {
+  color: #00684a !important;
+}
+
+.container-fluid {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+.title {
+  word-break: normal !important;
+  font-size: 1.2em !important;
+  font-weight: 700 !important;
+  color: #303030 !important;
+  text-decoration: none !important;
+}
+
+.title:hover {
+  text-decoration: underline !important;
+}
+
+:host ::ng-deep .label {
+  color: #9d9e9e !important;
+  /*
+    position: absolute !important;
+    left: 5px !important;
+    */
+}
+
+:host ::ng-deep .clear-all.ng-star-inserted {
+  color: #a6a6a6 !important;
+  cursor: pointer !important;
+  float: right !important;
+  padding-left: 5px !important;
+  margin-top: 7px !important;
+}
+
+:host ::ng-deep .clear-all.ng-star-inserted:hover {
+  text-decoration: underline;
+}
+
+:host ::ng-deep mat-label.chip-list {
+  background-color: rgb(66, 79, 96) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #fff !important;
+  padding-left: 15px !important;
+  padding-right: 25px !important;
+  margin-right: -18px !important;
+  margin-left: 10px !important;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+:host ::ng-deep mat-chip-list:first-child mat-label.chip-list:first-child {
+  margin-left: 0 !important;
+}
+
+:host ::ng-deep mat-chip {
+  border: 1px solid rgba(0, 0, 0, 0.08)
+    /*#b1b1b1*/
+     !important;
+  font-weight: 300 !important;
+}
+
+ol.result-list,
+.cdk-virtual-scroll-viewport.result-list.cdk-virtual-scroll-orientation-vertical {
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-flex-wrap: wrap !important;
+  -ms-flex-wrap: wrap !important;
+  flex-wrap: wrap !important;
+  list-style-type: none !important;
+  margin: 0 0 1.5em 0 !important;
+  padding: 0 !important;
+  clear: both !important;
+  width: 100% !important;
+  height: 100% !important;
+  /*height: calc(100vh - 200  px);*/
+  overflow: auto;
+}
+
+li.result,
+.mat-list-item.result {
+  display: list-item !important;
+  margin: 0 0 0.5em 0 !important;
+  padding: 1em 0 !important;
+  line-height: 1.4 !important;
+  width: 100% !important;
+  word-wrap: break-word !important;
+  border-bottom: 1px solid #e2e9ef !important;
+  font-size: 1em !important;
+}
+
+span.range {
+  padding-left: 0.6em !important;
+  padding-right: 0.6em !important;
+}
+
+li.result .row .col-10 {
+  padding-bottom: -0.25em !important;
+}
+
+.type.phase a,
+.type.recruitment a {
+  text-align: center !important;
+  padding: 4px 8px !important;
+  /*margin: -2px 6px 12px 0 !important;*/
+  color: #424242 !important;
+  border: 0 !important;
+  text-decoration: none;
+}
+
+.spacer {
+  margin-right: 0.6em !important;
+}
+
+.type.phase a:hover,
+.type.recruitment a:hover {
+  text-decoration: underline;
+}
+
+.type.phase a span.value,
+.type.recruitment a span.value {
+  border: 0 !important;
+  margin: 0px 0px 6px 0 !important;
+}
+
+span.type.phase,
+.type.phase a {
+  background-color: #f5b8a4 !important;
+}
+
+span.type.recruitment,
+.type.recruitment a {
+  background-color: #ffd54f !important;
+}
+
+/*
+  .type.phase {
+    position: absolute !important;
+    float: left !important;
+  }*/
+
+.icon.drug {
+  background: #80cbc4;
+}
+
+.icon.condition {
+  background: #d1c4e9;
+}
+
+.icon.info {
+  background: #b4c4d4;
+}
+
+.icon {
+  margin: 0 9px 0 5px;
+  padding-top: 4px;
+  padding-right: 6px;
+  padding-left: 6px;
+  padding-bottom: 4px;
+  border-radius: 50%;
+  border: 0;
+  font-size: .9em;
+}
+
+.spinner-item {
+  display: grid;
+  place-items: center;
+  margin-top: 10px;
+}
+
+.stats {
+  color: #424242 !important;
+  font-size: 0.9em !important;
+}
+
+.stats-no-chips {
+  color: #424242 !important;
+  font-size: 0.9em !important;
+  padding: 1.5em 5px 1.5em 1.5em !important;
+}
+
+.stats-with-chips {
+  color: #424242 !important;
+  font-size: 0.9em !important;
+  padding: 1.5em 5px 1.5em 1.5em !important;
+}
+
+/* drug card */
+.mat-card {
+  padding: 0 !important;
+  height: 100%;
+}
+
+.mat-card-header {
+  background-color: #e8ebee !important;
+  padding-top: 1em !important;
+}
+
+.mat-card-content {
+  padding: 16px !important;
+}

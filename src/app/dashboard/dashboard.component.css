@@ -1,0 +1,113 @@
+.body-bg {
+  background-color: #e8ebee !important;
+  width: 100%;
+  padding-top: 2em;
+}
+
+.example-card {
+  width: 90%;
+}
+
+.example-card-center {
+  width: 96%;
+}
+
+.mat-card-header {
+  padding-bottom: 0.5em !important;
+}
+
+.mat-card-content {
+  padding-top: 1em !important;
+}
+
+.icon {
+  margin: 0 9px 0 5px;
+  padding-top: 7px;
+  padding-right: 9px;
+  padding-left: 9px;
+  padding-bottom: 7px;
+  border-radius: 50%;
+  border: 0;
+  font-size: .9em;
+}
+
+.icon.drug {
+  background: #80cbc4;
+}
+
+.icon.condition {
+  background: #d1c4e9;
+}
+
+.icon.info {
+  background: #b4c4d4;
+}
+
+.icon.intervention {
+  background: #92cbf7;
+}
+
+.icon.status {
+  background: #ffd54f;
+}
+
+:host ::ng-deep .clear-all.ng-star-inserted {
+  color: #a6a6a6 !important;
+  cursor: pointer !important;
+  float: right !important;
+  padding-left: 5px !important;
+}
+
+:host ::ng-deep .clear-all.ng-star-inserted:hover {
+  text-decoration: underline;
+}
+
+:host ::ng-deep mat-label.chip-list {
+  background-color: rgb(66, 79, 96) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #fff !important;
+  padding-left: 15px !important;
+  padding-right: 25px !important;
+  margin-right: -18px !important;
+  margin-left: 10px !important;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+:host ::ng-deep mat-chip {
+  border: 1px solid rgba(0, 0, 0, 0.08) /*#b1b1b1*/ !important;
+  font-weight: 300 !important;
+}
+
+:host ::ng-deep h2 {
+  padding-top: 15px !important;
+}
+
+a h2 span {
+  color: #4e9dd0;
+}
+
+.dash-summary {
+  margin: 0 auto;
+  width: 97%;
+  text-align: center;
+  background: #fff;
+  color: rgba(0, 0, 0, .87);
+  border: 1px solid #9fcae5;
+  padding: 10px 5px 5px 5 px !important;
+  margin-bottom: 3em;
+}
+
+.footer {
+  margin: 0 auto;
+  text-align: center;
+}
+.footer a {
+  font-size: 0.85em;
+  font-weight: 300;
+  color: rgb(192, 192, 192);
+  text-shadow: 0 1px 1px #fff;
+  margin: 1em 0;
+}

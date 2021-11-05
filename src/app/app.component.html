@@ -1,0 +1,67 @@
+<div style="background-color: #fff;">
+  <mat-grid-list cols="4" rowHeight="100px" class="searchBarMatGrid">
+    <!-- logo -->
+    <mat-grid-tile>
+      <div class="searchBarMatGridLogo">
+        <a href="/">
+          <img src="assets/images/logo.png" width="150px"/>
+        </a>
+      </div>
+    </mat-grid-tile>
+    <!-- autocomplete search input -->
+    <mat-grid-tile colspan="2">
+      <div [style.width.%]=100>
+        <form [style.width.%]=100 (ngSubmit)="onSubmit()" [formGroup]="searchBox">
+          <mat-form-field *ngIf="currentRoute && currentRoute.startsWith('/drugs')"
+                          color="primary" 
+                          appearance="fill" 
+                          [style.width.%]=88 
+                          [style.margin-top.em]=1>
+            <mat-label>Search by condition type, trial name, or drug name...</mat-label>
+            <input type="text"
+                  matInput
+                  [formControl]="drugControl"
+                  [matAutocomplete]="drugAuto">
+            <mat-autocomplete #drugAuto="matAutocomplete">
+              <mat-option *ngFor="let option of drugsHolder | async" [value]="option.openfda.brand_name">
+                <span [innerHTML]="renderOption(option)"></span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field *ngIf="currentRoute && !currentRoute.startsWith('/drugs')"
+                          color="primary" 
+                          appearance="fill" 
+                          [style.width.%]=88 
+                          [style.margin-top.em]=1>
+            <mat-label>Search by condition type, trial name, or drug name...</mat-label>
+            <input type="text"
+                  matInput
+                  [formControl]="trialControl"
+                  [matAutocomplete]="trialAuto">
+            <mat-autocomplete #trialAuto="matAutocomplete">
+              <mat-option *ngFor="let option of trialsHolder | async" [value]="option.brief_title">
+                <span [innerHTML]="renderOption(option)"></span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <span>&nbsp;</span>
+          <button mat-flat-button color="primary">Search</button>
+        </form>
+      </div>
+    </mat-grid-tile>
+    <!-- empty -->
+    <mat-grid-tile><span></span></mat-grid-tile>
+  </mat-grid-list>
+  
+  <nav mat-tab-nav-bar>
+    <a mat-tab-link
+      *ngFor="let link of navLinks"
+      [routerLink]="link.link"
+      routerLinkActive #rla="routerLinkActive"
+      [active]="rla.isActive">
+      {{link.label}}
+    </a>
+  </nav>
+</div>
+
+<router-outlet></router-outlet>

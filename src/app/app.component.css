@@ -1,0 +1,83 @@
+.searchBarMatGrid {
+  min-width: 80%;
+}
+
+.searchBarMatGridLogo {
+  position: absolute;
+  left: 1.2em;
+}
+
+.mat-button-base {
+  margin: 8px 8px 8px 0;
+}
+
+.searchBox {
+  width: 100%
+}
+
+.alignMiddle {
+  vertical-align: middle !important;
+}
+
+.mat-tab-nav-bar {
+  background: #003430 !important;
+}
+
+.mat-tab-link {
+  color: #fff !important;
+  opacity: 1 !important;
+  text-transform: uppercase !important;
+  font-weight: 400 !important;
+  height: 36px !important;
+  min-width: 100px !important;
+  padding: 0 24px !important;
+}
+
+.mat-tab-link:focus,
+.mat-tab-link:hover {
+  background: #00684b !important;
+}
+
+.mat-tab-label-active {
+  background: #00684b !important;
+}
+
+.mat-flat-button.mat-primary, .mat-raised-button.mat-primary, .mat-fab.mat-primary, .mat-mini-fab.mat-primary {
+  background-color: rgb(17, 97, 73) !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: rgb(17, 97, 73) !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+  background-color: #00684b !important;
+}
+
+mat-ink-bar.mat-ink-bar {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.mat-flat-button {
+  height: 40px !important;
+  width: 100px !important;
+  font-weight: 400 !important;
+  vertical-align: super !important;
+}
+
+.mat-option {
+  font-size: 14px !important;
+}
+
+.mat-option .type.recruitment {
+  background-color: #ffd54f !important;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  height: 50%;
+  float: right;
+  position: absolute;
+  right: 0;
+}

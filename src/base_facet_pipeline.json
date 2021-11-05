@@ -1,0 +1,77 @@
+[{
+    "$searchMeta": {
+        "index": "default",
+        "facet": {
+            "operator": {
+                "exists": {
+                    "path": "nct_id"
+                }
+            },
+            "facets": {
+                "completion_date": {
+                    "type": "date",
+                    "path": "completion_date",
+                    "boundaries": [
+                        ISODate("2011-01-01"),
+                        ISODate("2012-01-01"),
+                        ISODate("2013-01-01"),
+                        ISODate("2014-01-01"),
+                        ISODate("2015-01-01"),
+                        ISODate("2016-01-01"),
+                        ISODate("2017-01-01"),
+                        ISODate("2018-01-01"),
+                        ISODate("2019-01-01"),
+                        ISODate("2020-01-01"),
+                        ISODate("2021-01-01"),
+                        ISODate("2022-01-01")
+                    ],
+                    "default": "other"
+                },
+                "conditions": {
+                    "type": "string",
+                    "path": "condition",
+                    "numBuckets": 10
+                },
+                "intervention_types": {
+                    "type": "string",
+                    "path": "intervention",
+                    "numBuckets": 10
+                },
+                "interventions": {
+                    "type": "string",
+                    "path": "intervention_mesh_term",
+                    "numBuckets": 10
+                },
+                "gender": {
+                    "type": "string",
+                    "path": "gender",
+                    "numBuckets": 10
+                },
+                "sponsors": {
+                    "type": "string",
+                    "path": "sponsors.agency",
+                    "numBuckets": 10
+                },
+                "start_date": {
+                    "type": "date",
+                    "path": "start_date",
+                    "boundaries": [
+                        ISODate("2011-01-01"),
+                        ISODate("2012-01-01"),
+                        ISODate("2013-01-01"),
+                        ISODate("2014-01-01"),
+                        ISODate("2015-01-01"),
+                        ISODate("2016-01-01"),
+                        ISODate("2017-01-01"),
+                        ISODate("2018-01-01"),
+                        ISODate("2019-01-01"),
+                        ISODate("2020-01-01"),
+                        ISODate("2021-01-01"),
+                        ISODate("2022-01-01")
+                    ],
+                    "default": "other"
+                }
+            }
+        }
+    }
+}]
