@@ -1,0 +1,159 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "completion_date": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "conditions": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "count": {
+            "bsonType": "object",
+            "properties": {
+                "lowerBound": {
+                    "bsonType": "int"
+                },
+                "total": {
+                    "bsonType": "int"
+                }
+            }
+        },
+        "drugs": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "genders": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "intervention_types": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "interventions": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "manufacturers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "routes": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "sponsors": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "start_date": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "count": {
+                        "bsonType": "int"
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        }
+    },
+    "title": "facet"
+}

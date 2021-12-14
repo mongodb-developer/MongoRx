@@ -1,0 +1,29 @@
+{
+    "field_name": "search",
+    "function_name": "trialSearchCustomResolver",
+    "input_type": {
+        "properties": {
+            "filters": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "string"
+                }
+            },
+            "limit": {
+                "bsonType": "long"
+            },
+            "skip": {
+                "bsonType": "long"
+            },
+            "term": {
+                "bsonType": "string"
+            }
+        },
+        "title": "SearchInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Query",
+    "payload_type": "Trial",
+    "payload_type_format": "generated-list"
+}

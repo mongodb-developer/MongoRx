@@ -1,0 +1,8 @@
+.editorconfig
+.git
+.gitignore
+charts
+data
+deploy
+/node_modules
+/realm

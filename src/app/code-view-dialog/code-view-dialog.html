@@ -1,0 +1,10 @@
+<div mat-dialog-content style="display: flex; flex-direction: column;">
+  <div>
+    <h3 class="section">{{ dialogData.gqlQueryTitle }}</h3>
+    <pre [innerHtml]="dialogData.gqlQuery" class="language-graphql"></pre>
+  </div>
+  <div *ngIf="dialogData.gqlVars && dialogData.gqlVars.trim().length > 0">
+    <h3 class="section">{{ dialogData.gqlVarsTitle }}</h3>
+    <pre [innerHtml]="dialogData.gqlVars" class="language-json"></pre>
+  </div>
+</div>

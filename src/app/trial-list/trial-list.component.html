@@ -12,16 +12,23 @@
       </mat-progress-spinner>
     </div>
     <div *ngIf="facets" class="sidebar">
+      <div class="code-view-container">
+        <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('facets')">
+          <mat-icon>code</mat-icon>
+        </button>
+      </div>
+      <h3 class="facetlist">Start Date</h3>
+      <table class="facet-table">
+        <tbody>
+          <ng-container *ngFor="let facet of facets[0].start_date | orderBy: 'name' : true">
+            <tr *ngIf="facet.name !== 'other' && facet.count > 0">
+              <td><a class="facet-label" (click)="onStartDateFacetClicked(facet.name)">{{ facet.name | date: "yyyy" : "+0800" }}</a></td>
+              <td class="count">{{ facet.count }}</td>
+            </tr>  
+          </ng-container>
+        </tbody>
+      </table>
       <!--
-            <h3 class="facetlist">Start Date</h3>
-            <table class="facet-table">
-                <tbody>
-                    <tr *ngFor="let facet of facets[0].start_date">
-                        <td><a class="facet-label">{{ facet.name }}</a></td>
-                        <td class="count">{{ facet.count }}</td>
-                    </tr>
-                </tbody>
-            </table>
             <h3 class="facetlist">Completion Date</h3>
             <table class="facet-table">
                 <tbody>
@@ -83,11 +90,23 @@
   <!-- trial list -->
   <div fxLayout="column" fxFlex class="trial-list">
     <!-- paging and stats -->
-    <div class="stats" style="padding-top: 1.5em;" *ngIf="trials && trials.length > 0 && searchVariables.searchInput.term.length == 0 && conditionFilters.length == 0 && interventionFilters.length == 0 && productFilters.length == 0 && sponsorFilters.length == 0 && genderFilters.length == 0 && statusFilters.length == 0">Showing 1 - {{trials.length | number}} of {{trials[0].count.total | number}}</div>
+    <div class="stats" style="padding-top: 1.5em;" *ngIf="trials && trials.length > 0 && searchVariables.searchInput.term.length == 0 && conditionFilters.length == 0 && interventionFilters.length == 0 && productFilters.length == 0 && sponsorFilters.length == 0 && genderFilters.length == 0 && statusFilters.length == 0 && startDateFilters.length == 0">
+      Showing 1 - {{trials.length | number}} of {{trials[0].count.total | number}}
+      <div class="code-view-container" style="margin-left: auto">
+        <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('trials')">
+          <mat-icon>code</mat-icon>
+        </button>
+      </div>
+    </div>
     <div style="padding-top: 1.5em; padding-bottom: 0.5em;"
-      *ngIf="searchVariables.searchInput.term.length > 0 || conditionFilters.length > 0 || interventionFilters.length > 0 || productFilters.length > 0 || sponsorFilters.length > 0 || genderFilters.length > 0  || statusFilters.length > 0">
+      *ngIf="searchVariables.searchInput.term.length > 0 || conditionFilters.length > 0 || interventionFilters.length > 0 || productFilters.length > 0 || sponsorFilters.length > 0 || genderFilters.length > 0  || statusFilters.length > 0 || startDateFilters.length > 0">
       <!-- paging and stats -->
       <span class="stats" *ngIf="trials && trials.length > 0">Showing 1 - {{trials.length | number}} of {{trials[0].count.total | number}}</span>
+      <div class="code-view-container" style="margin-left: auto;">
+        <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('trials')">
+          <mat-icon>code</mat-icon>
+        </button>
+      </div>  
       <!-- search term -->
       <mat-chip-list aria-label="Term" 
                      style="display: inline-block; justify-content: center;"
@@ -102,6 +121,18 @@
           <button matChipRemove *ngIf="removable">
             <mat-icon>cancel</mat-icon>
           </button><!-- add (remove) func -->
+        </mat-chip>
+      </mat-chip-list>
+      <!-- date filters -->
+      <mat-chip-list aria-label="Date Filters" style="display: inline-block; justify-content: center;" removeable="true"
+        *ngIf="startDateFilters.length > 0">
+        <mat-label class="chip-list">Start Date</mat-label>
+        <mat-chip *ngFor="let filter of startDateFilters" [selectable]="selectable" [removable]="removable"
+          (removed)="removeFilter(filter, startDateFilters)">
+          {{ objectValues(filter)[0] | date: 'yyyy': "+0800"}}
+          <button matChipRemove *ngIf="removable">
+            <mat-icon>cancel</mat-icon>
+          </button>
         </mat-chip>
       </mat-chip-list>
       <!-- condition filters -->
@@ -212,7 +243,7 @@
           </div>
         </div>
         <!-- drugs -->
-        <div fxLayout="row" fxLayout.xs="column" *ngIf="trial.intervention === 'Drug' || trial.intervention_mesh_term">
+        <div fxLayout="row" fxLayout.xs="column" *ngIf="(trial.intervention === 'Drug' && trial.intervention_mesh_term) || trial.intervention_mesh_term">
           <div fxFlex="15" fxFlex.xs="85">
             <p class="label">Drug</p>
           </div>
@@ -221,13 +252,13 @@
               <p style="display: inline; line-height: 1.4;" *ngFor="let drug of trial.intervention_mesh_term">
                 <a class="facet-filter" (click)="onProductFacetClicked(drug)">{{ drug }}</a>
                 <a [routerLink]="['/drugs']" [queryParams]="{q: drug}">
-                <fa-icon [icon]="faStethoscope" class="icon drug"></fa-icon>
+                <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>
                 </a>
               </p>
             </div>
             <div *ngIf="!isArray(trial.intervention_mesh_term)">
-              <span>{{ trial.intervention_mesh_term }}
-                <a [routerLink]="['/drugs']" [queryParams]="{q: 'carboplatin'}">
+              <span *ngFor="let drug of trial.intervention_mesh_term">{{ trial.intervention_mesh_term }}
+                <a [routerLink]="['/drugs']" [queryParams]="{q: drug}">
                   <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>
                 </a>
               </span>
@@ -256,7 +287,7 @@
           <div fxFlex="85" fxFlex.xs="15" *ngIf="trial.status">
             <p style="display: inline; line-height: 2;">
               <span *ngIf="trial.status" class="type recruitment">
-                <a href="CHANGEME">{{ trial.status }}</a>
+                <a class="facet-label" (click)="onStatusFacetClicked(trial.status)">{{ trial.status }}</a>
               </span>
               <span class="spacer">&nbsp;</span>
               <span *ngIf="trial.phase && trial.phase !== 'N/A'" class="type phase">

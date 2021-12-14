@@ -4,7 +4,7 @@ import {ApolloClientOptions, InMemoryCache, ApolloLink} from '@apollo/client/cor
 import {HttpLink} from 'apollo-angular/http';
 import {HttpHeaders} from '@angular/common/http';
 
-const uri = 'https://us-east-1.aws.realm.mongodb.com/api/client/v2.0/app/clintrialgql-evbee/graphql'; // <-- add the URL of the GraphQL server here
+const uri = 'https://us-east-1.aws.realm.mongodb.com/api/client/v2.0/app/clintrialgql-vfmul/graphql'; // <-- add the URL of the GraphQL server here
 export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   // based on example from https://apollo-angular.com/docs/data/network#middleware
   const http = httpLink.create({uri});

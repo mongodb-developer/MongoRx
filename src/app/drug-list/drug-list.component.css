@@ -19,6 +19,15 @@ h3.facetlist {
   font-size: 1em;
   font-weight: 700;
   color: #000;
+  margin-bottom: 0;
+}
+
+h3.facetlist:nth-child(2) {
+  margin-top: 0.5em !important;
+}
+
+table.facet-table:nth-child(3) {
+  margin-top: 1em !important;
 }
 
 .facet-table {
@@ -61,6 +70,11 @@ td.facet-nameX {
   overflow: hidden;
   display: block;
   width: 90%;
+}
+
+.code-view-container {
+  float: right !important;
+  margin-left: 1em;
 }
 
 /* drug list */
@@ -277,4 +291,8 @@ span.type.recruitment,
 
 .mat-card-content {
   padding: 16px !important;
+}
+
+.stats-with-chips {
+  width: 100%;
 }

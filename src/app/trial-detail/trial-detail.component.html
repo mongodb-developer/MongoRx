@@ -13,7 +13,7 @@
         </div>
         <div class="one-third" fxFlex="33">
           <h5 class="summary">Enrollment</h5>
-          <h2 class="summary">{{ trial?.enrollment && trial?.enrollment > 0 ? (trial.enrollment + " - " + trial.gender + " Gender") : (trial?.enrollment ? (trial.gender + " Gender") : "Placeholder enrollment") }}</h2>
+          <h2 class="summary">{{ trial?.enrollment && trial?.enrollment > 0 ? ((trial.enrollment | number) + " - " + trial.gender + " Gender") : (trial?.enrollment ? (trial.gender + " Gender") : trial.gender + " Gender") }}</h2>
         </div>
         <div class="one-third" fxFlex="33">
           <h5 class="summary">Recruitment Status</h5>
@@ -22,7 +22,7 @@
       </div>
     </div>
     <div fxFlex="34" fxLayoutAlign="center center" class="map">
-      <div *ngIf="googleMapsApiLoaded | async" style="width: 100%; height: 100%;">
+      <div *ngIf="googleMapsApiLoaded | async" style="width: 700%; height: 100%;">
         <google-map [zoom]="zoom" [center]="center" [options]="mapOptions">
             <map-marker
                 *ngFor="let marker of markers"
@@ -36,10 +36,17 @@
 </div>
 <div>
   <div fxLayout="column" fxFlex="75" class="trial-detail">
-    <h2>
-      <fa-icon [icon]="faChartLine" class="icon detail"></fa-icon>
-      Trial Overview
-    </h2>
+    <div fxLayout="row" fxLayout.xs="column" class="trial-detail-header">
+      <h2>
+        <fa-icon [icon]="faChartLine" class="icon detail"></fa-icon>
+        Trial Overview
+      </h2>
+      <div class="code-view-container">
+        <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('count')">
+          <mat-icon>code</mat-icon>
+        </button>
+      </div>
+      </div>
     <!-- trial dates -->
     <div fxLayout="row" fxLayout.xs="column">
       <div fxFlex="15" fxFlex.xs="85" fxFlexOrder="1">
@@ -72,19 +79,22 @@
       </div>
     </div>
     <!-- drugs -->
-    <div fxLayout="row" fxLayout.xs="column">
-      <div fxFlex="15" fxFlex.xs="85" *ngIf="trial && trial.intervention === 'Drug' && trial.intervention_mesh_term">
+    <div fxLayout="row" fxLayout.xs="column" *ngIf="(trial?.intervention === 'Drug' && trial?.intervention_mesh_term) || trial?.intervention_mesh_term">
+      <div fxFlex="15" fxFlex.xs="85">
         <p class="label">Drug</p>
       </div>
-      <div fxFlex="85" fxFlex.xs="15" *ngIf="trial && trial.intervention === 'Drug' && trial.intervention_mesh_term">
+      <div fxFlex="85" fxFlex.xs="15">
         <div *ngIf="isArray(trial.intervention_mesh_term)">
           <p style="display: inline; line-height: 1.4;" *ngFor="let drug of trial.intervention_mesh_term">
-            {{ drug }}
-            <fa-icon [icon]="faStethoscope" class="icon drug"></fa-icon>
+            <a class="facet-filter">{{ drug }}</a>
+            <a [routerLink]="['/drugs']" [queryParams]="{q: drug}">
+              <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>
+            </a>
           </p>
         </div>
         <div *ngIf="!isArray(trial.intervention_mesh_term)">
-          <span>{{ trial.intervention_mesh_term }}
+          <span *ngFor="let drug of trial.intervention_mesh_term">
+            <a class="facet-filter">{{ drug }}</a>
             <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>
           </span>
         </div>
@@ -103,21 +113,14 @@
         </div>
       </div>
     </div>
-    <!-- status -->
     <div fxLayout="row" fxLayout.xs="column" class="section-end">
-      <div fxFlex="15" fxFlex.xs="85" *ngIf="trial && trial.status">
-        <p class="label">Status</p>
+      <div fxFlex="15" fxFlex.xs="85" *ngIf="trial && trial.sponsors && trial.sponsors.agency">
+        <p class="label">Sponsor Address</p>
       </div>
-      <div fxFlex="85" fxFlex.xs="15" *ngIf="trial && trial.status">
-        <p style="display: inline; line-height: 2;">
-          <span *ngIf="trial.status" class="type recruitment">
-            <a href="CHANGEME">{{ trial.status }}</a>
-          </span>
-          <span class="spacer">&nbsp;</span>
-          <span *ngIf="trial.phase && trial.phase !== 'N/A'" class="type phase">
-            <a href="CHANGEME">{{ trial.phase }}</a>
-          </span>
-        </p>
+      <div fxFlex="85" fxFlex.xs="15" *ngIf="trial && trial.sponsors && trial.sponsors.agency">
+        <div>
+          <p>{{ sponsorAddress }}</p>
+        </div>
       </div>
     </div>
     <!-- genders -->

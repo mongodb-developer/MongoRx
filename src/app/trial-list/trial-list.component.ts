@@ -2,15 +2,18 @@ import { Apollo, gql } from 'apollo-angular';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { faFlask, faMedkit, faPlus, faStethoscope, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { map } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 import { noop as _noop } from 'lodash-es';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { SearchTermService } from "../services/search-term.service";
 import { Subscription, Observable } from 'rxjs';
+import { CodeViewDialog } from '../code-view-dialog/code-view-dialog.component';
+import { DocumentNode } from 'graphql';
 
 @Component({
   selector: 'app-trial-list',
   templateUrl: './trial-list.component.html',
-  styleUrls: ['./trial-list.component.css']
+  styleUrls: ['./trial-list.component.css', '../styles/common.css']
 })
 
 export class TrialListComponent implements OnInit, OnDestroy {
@@ -47,73 +50,38 @@ export class TrialListComponent implements OnInit, OnDestroy {
   //----------------
   // GraphQL queries
   //----------------
-  FIND_TRIALS = gql`
-    query FindTrials($searchInput: SearchInput!) {
-      search(input: $searchInput) {
-        nct_id
-        brief_title
-        start_date
-        completion_date
-        condition
-        intervention
-        intervention_mesh_term
-        sponsors {
-          agency
-        }
-        status
-        phase
-        highlights {
-          texts {
-            type
-            value
-          }
-        }
-        score
-        count {
-          total
-        }
-      }
+  FIND_TRIALS = gql`query FindTrials($searchInput: SearchInput!) {
+  search(input: $searchInput) {
+    nct_id
+    brief_title
+    start_date
+    completion_date
+    condition
+    intervention
+    intervention_mesh_term
+    sponsors { agency }
+    status
+    phase
+    highlights { 
+      texts { type value }
     }
-  `;
+    score
+    count { total }
+  }
+}`;
 
-  GET_FACETS = gql`
-    query GetFacets($facetInput: FacetInput!) {
-      facets(input: $facetInput) {
-        completion_date {
-          count
-          name
-        }
-        conditions {
-          count
-          name
-        }
-        drugs {
-            count
-            name
-        }
-        genders {
-          count
-          name
-        }
-        intervention_types {
-          count
-          name
-        }
-        interventions {
-          count
-          name
-        }
-        sponsors {
-          count
-          name
-        }
-        start_date {
-          count
-          name
-        }
-      }
-    }
-    `;
+  GET_FACETS = gql`query GetFacets($facetInput: FacetInput!) {
+  facets(input: $facetInput) {
+    completion_date { count name }
+    conditions { count name }
+    drugs { count name }
+    genders { count name }
+    intervention_types { count name }
+    interventions { count name }
+    sponsors { count name }
+    start_date { count name }
+  }
+}`;
 
   facetVariables = {
     "facetInput": {
@@ -155,6 +123,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   genderFilters: any[]       = [];
   statusFilters: any[]       = [];
   facetFilters: string[]     = [];
+  startDateFilters: string[] = [];
 
   updateFacetFilters() : void {
     let allFilters = this.conditionFilters
@@ -162,7 +131,8 @@ export class TrialListComponent implements OnInit, OnDestroy {
       .concat(this.genderFilters)
       .concat(this.sponsorFilters)
       .concat(this.productFilters)
-      .concat(this.statusFilters); // TODO: add more?
+      .concat(this.statusFilters)
+      .concat(this.startDateFilters); // TODO: add more?
     console.log(`All filters: ${JSON.stringify(allFilters)}`);
     let queryStringFilters = new Set<string>();
     allFilters.map((filter) => {
@@ -195,7 +165,17 @@ export class TrialListComponent implements OnInit, OnDestroy {
   }
 
   onSponsorFacetClicked(facetName: string): void {
-    let added = this.addFilter({"sponsors.agency": facetName}, this.sponsorFilters);
+    let added = this.addFilter({"sponsors.agency": ("\"" + facetName + "\"")}, this.sponsorFilters);
+    if (added === -1) this.updateFacetFilters();
+  }
+
+  onStatusFacetClicked(facetName: string): void {
+    let added = this.addFilter({"status": ("\"" + facetName + "\"")}, this.statusFilters);
+    if (added === -1) this.updateFacetFilters();
+  }
+
+  onStartDateFacetClicked(facetName: string): void {
+    let added = this.addFilter({"start_date": ("\"" + facetName + "\"")}, this.startDateFilters);
     if (added === -1) this.updateFacetFilters();
   }
 
@@ -276,6 +256,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
     this.sponsorFilters = [];
     this.productFilters = [];
     this.statusFilters = [];
+    this.startDateFilters = [];
 
     // update total count
     this.updateFacetFilters();
@@ -309,12 +290,39 @@ export class TrialListComponent implements OnInit, OnDestroy {
     }).join(' ');
   }
 
+  openDialog(which: string): void {
+    let data = {
+      gqlQuery: which == 'facets' ? this.getGqlString(this.GET_FACETS) : this.getGqlString(this.FIND_TRIALS),
+      gqlQueryTitle: "GraphQL Query",
+      gqlVars: JSON.stringify(which == 'facets' ? this.facetVariables : this.searchVariables, null, 2),
+      gqlQueryLang: "graphql",
+      gqlVarsTitle: "Query Variables",
+      gqlVarsLang: "json"
+    }
+    const dialogRef = this.dialog.open(CodeViewDialog, {
+      width: '50%',
+      data: data
+    });
+
+    /*
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log(result);
+    });
+    */
+  }
+
+  getGqlString(doc: DocumentNode): string | undefined {
+    return doc.loc && doc.loc.source.body;
+  }
+
   constructor(
     private apollo: Apollo,
     private _cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private searchTermService: SearchTermService) {
+    private searchTermService: SearchTermService,
+    private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -357,6 +365,9 @@ export class TrialListComponent implements OnInit, OnDestroy {
           }
           if (keys.indexOf("status") >= 0) {
             qParam += `|status=${params.get('status')}`
+          }
+          if (keys.indexOf("start_date") >= 0) {
+            qParam += `|start_date=${params.get('start_date')}`
           }
           return qParam;
         }
@@ -401,6 +412,8 @@ export class TrialListComponent implements OnInit, OnDestroy {
               this.addFilter({[key]: value}, this.genderFilters);
             } else if (key === "status") {
               this.addFilter({[key]: value}, this.statusFilters);
+            } else if (key === "start_date") {
+              this.addFilter({[key]: value}, this.startDateFilters);
             }
           }
         }

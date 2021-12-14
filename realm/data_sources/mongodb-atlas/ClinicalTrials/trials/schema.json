@@ -1,0 +1,136 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "brief_summary": {
+            "bsonType": "string"
+        },
+        "brief_title": {
+            "bsonType": "string"
+        },
+        "completion_date": {
+            "bsonType": "date"
+        },
+        "condition": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "condition_mesh_term": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "count": {
+            "bsonType": "object",
+            "properties": {
+                "lowerBound": {
+                    "bsonType": "int"
+                },
+                "total": {
+                    "bsonType": "int"
+                }
+            }
+        },
+        "detailed_description": {
+            "bsonType": "string"
+        },
+        "eligibility_description": {
+            "bsonType": "string"
+        },
+        "enrollment": {
+            "bsonType": "int"
+        },
+        "gender": {
+            "bsonType": "string"
+        },
+        "highlights": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "path": {
+                        "bsonType": "string"
+                    },
+                    "score": {
+                        "bsonType": "double"
+                    },
+                    "texts": {
+                        "bsonType": "array",
+                        "items": {
+                            "bsonType": "object",
+                            "properties": {
+                                "type": {
+                                    "bsonType": "string"
+                                },
+                                "value": {
+                                    "bsonType": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "intervention": {
+            "bsonType": "string"
+        },
+        "intervention_mesh_term": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "maximum_age": {
+            "bsonType": "int"
+        },
+        "minimum_age": {
+            "bsonType": "int"
+        },
+        "nct_id": {
+            "bsonType": "string"
+        },
+        "nct_title": {
+            "bsonType": "string"
+        },
+        "official_title": {
+            "bsonType": "string"
+        },
+        "phase": {
+            "bsonType": "string"
+        },
+        "score": {
+            "bsonType": "double"
+        },
+        "sponsors": {
+            "bsonType": "object",
+            "properties": {
+                "agency": {
+                    "bsonType": "string"
+                },
+                "agency_class": {
+                    "bsonType": "string"
+                }
+            }
+        },
+        "start_date": {
+            "bsonType": "date"
+        },
+        "status": {
+            "bsonType": "string"
+        },
+        "study_type": {
+            "bsonType": "string"
+        },
+        "url": {
+            "bsonType": "string"
+        }
+    },
+    "required": [
+        "_id"
+    ],
+    "title": "trial"
+}

@@ -112,7 +112,6 @@ export class AppComponent implements OnInit, OnDestroy {
         debounceTime(400),
         distinctUntilChanged(),
         switchMap(val => {
-          console.log(`Trail val: ${val}`);
           return this.filterTrials(val || '')
         })
       );
@@ -176,7 +175,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   filterTrials(val: string) : Observable<any[]> {
-    console.log(`trial val: ${val}`);
     this.searchVariables.searchInput.term = val;
 
     // call the function which makes graphQL request

@@ -7,6 +7,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { GoogleMap, MapGeocoder } from '@angular/google-maps';
+import { GoogleMapsLoaderService } from '../services/google-maps-loader.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DocumentNode } from 'graphql';
+import { CodeViewDialog } from '../code-view-dialog/code-view-dialog.component';
 
 @Component({
   selector: 'app-trial-detail',
@@ -46,6 +50,7 @@ export class TrialDetailComponent implements OnInit {
   // trial data
   trial: any;
   nctId: string | null;
+  sponsorAddress: string | null;
 
   //----------------
   // GraphQL queries
@@ -105,19 +110,11 @@ export class TrialDetailComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog,
     private geocoder: MapGeocoder,
-    httpClient: HttpClient) {
-      this.googleMapsApiLoaded = httpClient.jsonp(`https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}`, 'callback')
-        .pipe(
-          map(() => true),
-          catchError((error: HttpErrorResponse) => {
-            console.error(error);
-            return of(false);
-          }),
-        );
+    googleMapsLoader: GoogleMapsLoaderService) {
+      this.googleMapsApiLoaded = googleMapsLoader.isApiLoaded$;
   }
-
-  jsonpCallback(): void {}
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
@@ -134,29 +131,58 @@ export class TrialDetailComponent implements OnInit {
         this.trial = data.trial;
         console.log(`Sponsor: ${this.trial.sponsors.agency}`);
         this.googleMapsApiLoaded.subscribe(val => {
-          console.log(`googleMapsApiLoaded: ${val}`)
           this.geocoder.geocode({
             address: this.trial.sponsors.agency
           }).subscribe(({results}) => {
+            //console.log(JSON.stringify(results));
+            this.sponsorAddress = results[0].formatted_address;
             const location = results[0].geometry.location.toJSON();
+            this.center = {lat: location.lat, lng: location.lng};
             console.log(location);
             this.markers.push({
               position: {
-                lat: this.center.lat,
-                lng: this.center.lng,
+                lat: location.lat,
+                lng: location.lng,
               },
+              title: this.trial.sponsors.agency,
               visible: true
-              /*
-              label: {
-                color: 'red',
-                text: this.trial.sponsors.agency
-              },
-              title: this.trial.sponsors.agency
-              */
             });
-            this.center = {lat: location.lat, lng: location.lng};
           });
         });
       });
+  }
+
+  getGqlString(doc: DocumentNode): string | undefined {
+    return doc.loc && doc.loc.source.body;
+  }
+  
+  openDialog(which: string): void {
+    let data:any = {};
+    data.gqlQuery = `this.geocoder.geocode({
+  address: "${this.trial.sponsors.agency}"
+}).subscribe(({results}) => {
+  this.sponsorAddress = results[0].formatted_address;
+  const location = results[0].geometry.location.toJSON();
+  this.center = {lat: location.lat, lng: location.lng};
+  this.markers.push({
+    position: {
+      lat: location.lat,
+      lng: location.lng,
+    },
+    title: "${this.trial.sponsors.agency}",
+    visible: true
+  });
+});`;
+
+    data.gqlQueryTitle = "TypeScript Code";
+    data.gqlQueryLang = "typescript";
+    data.gqlVars = "";
+    data.gqlVarsTitle = "";
+    data.gqlVarsLang = "";
+
+    const dialogRef = this.dialog.open(CodeViewDialog, {
+      width: '50%',
+      data: data
+    });
   }
 }

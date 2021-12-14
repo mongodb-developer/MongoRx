@@ -1,0 +1,29 @@
+{
+    "field_name": "drugTrialedWithFacet",
+    "function_name": "drugTrialedWithFacetCustomResolver",
+    "input_type": {
+        "properties": {
+            "countOnly": {
+                "bsonType": "bool"
+            },
+            "filters": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "string"
+                }
+            },
+            "limit": {
+                "bsonType": "long"
+            },
+            "term": {
+                "bsonType": "string"
+            }
+        },
+        "title": "DrugTrialedWithFacetInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Query",
+    "payload_type": "Facet",
+    "payload_type_format": "generated-list"
+}

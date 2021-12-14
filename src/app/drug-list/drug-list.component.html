@@ -27,6 +27,11 @@
                 </tbody>
             </table>
             -->
+      <div class="code-view-container" style="margin-left: auto;">
+        <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('facets')">
+          <mat-icon>code</mat-icon>
+        </button>
+      </div>
       <h3 class="facetlist">Manufacturers</h3>
       <table class="facet-table">
         <tbody>
@@ -38,15 +43,15 @@
           </tr>
         </tbody>
       </table>
-      <!--h3 class="facetlist">Purpose</-h3>
-      <table-- class="facet-table">
+      <h3 class="facetlist">Administration Route</h3>
+      <table class="facet-table">
         <tbody>
-          <tr *ngFor="let facet of facets[0].purposes">
-            <td class="facet-name"><a class="facet-label" (click)="onPurposeFacetClicked(facet.name)">{{ facet.name.indexOf('Purpose ') == 0 ? facet.name.substring(8) : facet.name }}</a></td>
+          <tr *ngFor="let facet of facets[0].routes">
+            <td class="facet-name"><a class="facet-label" (click)="onRouteFacetClicked(facet.name)">{{ titleCase(facet.name) }}</a></td>
             <td class="count">{{ facet.count }}</td>
           </tr>
         </tbody>
-      </table-->
+      </table>
     </div>
   </div>
 
@@ -56,16 +61,26 @@
     <div fxLayout="row" fxFlex class="drug-list">
       <div class="stats-no-chips"
         *ngIf="drugs && drugs.length > 0 && searchVariables.drugSearchInput.term.length == 0 && manufacturerFilters.length == 0">
-        Showing 1 - {{drugs.length | number}} of {{drugs[0].count.total | number}}</div>
+        Showing 1 - {{drugs.length | number}} of {{drugs[0].count.total | number}}
+        <div class="code-view-container" style="margin-left: 60vw;">
+          <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('drugs')">
+            <mat-icon>code</mat-icon>
+          </button>
+        </div>
+      </div>
       <div class="stats-with-chips" *ngIf="searchVariables.drugSearchInput.term.length > 0 || manufacturerFilters.length > 0">
         <!-- paging and stats -->
-        <span class="stats" *ngIf="drugs && drugs.length > 0">Showing 1 - {{drugs.length | number}} of
-          {{drugs[0].count.total | number}}</span>
-        <!-- search term -->
+        <span class="stats" *ngIf="drugs && drugs.length > 0">Showing 1 - {{drugs.length | number}} of {{drugs[0].count.total | number}}</span>
+        <div class="code-view-container">
+          <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('drugs')">
+            <mat-icon>code</mat-icon>
+          </button>
+        </div>
+          <!-- search term -->
         <mat-chip-list aria-label="Term" style="display: inline-block; justify-content: center;" removeable="true"
           *ngIf="searchVariables.drugSearchInput.term && searchVariables.drugSearchInput.term.length > 0">
           <mat-label class="chip-list">Find</mat-label>
-          <mat-chip [selectable]="selectable" [removable]="removable" (removed)="removeSearchTermAndFilters()"
+          <mat-chip [selectable]="selectable" [removable]="removable" (removed)="removeSearchTerm()"
             *ngIf="' null ' != searchVariables.drugSearchInput.term && searchVariables.drugSearchInput.term.length > 0">
             {{ searchVariables.drugSearchInput.term }}
             <button matChipRemove *ngIf="removable">
@@ -86,20 +101,20 @@
           </mat-chip>
         </mat-chip-list>
         <!-- manufacturer filters -->
-        <mat-chip-list aria-label="Purpose Filters" style="display: inline-block; justify-content: center;"
-          removeable="true" *ngIf="purposeFilters.length > 0">
-          <mat-label class="chip-list">Purpose</mat-label>
-          <mat-chip *ngFor="let filter of purposeFilters" [selectable]="selectable" [removable]="removable"
-            (removed)="removeFilter(filter, purposeFilters)">
-            {{ objectValues(filter) }}
+        <mat-chip-list aria-label="Route Filters" style="display: inline-block; justify-content: center;"
+          removeable="true" *ngIf="routeFilters.length > 0">
+          <mat-label class="chip-list">Route</mat-label>
+          <mat-chip *ngFor="let filter of routeFilters" [selectable]="selectable" [removable]="removable"
+            (removed)="removeFilter(filter, routeFilters)">
+            {{ titleCase(objectValues(filter)[0]) }}
             <button matChipRemove *ngIf="removable">
               <mat-icon>cancel</mat-icon>
             </button>
           </mat-chip>
         </mat-chip-list>
-        <span class="clear-all" *ngIf="(manufacturerFilters.length + purposeFilters.length) > 0" (click)="onClearAll()">Clear all</span>
+        <span class="clear-all" *ngIf="(manufacturerFilters.length + routeFilters.length) > 0" (click)="onClearAll()">Clear all</span>
       </div>
-    </div>
+  </div>
     <!-- drug list -->
     <div fxLayout="row" fxFlex class="drug-list">
       <div fxLayout="column" fxFlex class="drug-list">
@@ -108,19 +123,20 @@
             <mat-card class="example-card">
               <mat-card-header>
                 <mat-card-title>
-                  <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>{{ titleCase(drug.openfda.brand_name) }}
+                  <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>
+                  <a class="drug-link" [routerLink]="['/drugs', drug.id]">{{ titleCase(drug.openfda.brand_name) }}</a>
                 </mat-card-title>
               </mat-card-header>
               <mat-divider></mat-divider>
               <mat-card-content>
-                <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.openfda?.generic_name">
+                <!--div fxLayout="row" fxLayout.xs="column" *ngIf="drug.openfda?.generic_name">
                   <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
                     <p class="label">ID</p>
                   </div>
                   <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
-                    <div>{{ drug._id }}</div>
+                    <div>{{ drug.id }}</div>
                   </div>
-                </div>
+                </div-->
                 <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.openfda?.generic_name">
                   <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
                     <p class="label">Generic Name</p>
@@ -139,14 +155,6 @@
                     </div>
                   </div>
                 </div>
-                <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.active_ingredient">
-                  <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
-                    <p class="label">Active Ingredient</p>
-                  </div>
-                  <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
-                    <div>{{ trimActiveIngredient(drug.active_ingredient) }}</div>
-                  </div>
-                </div>
                 <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.effective_time">
                   <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
                     <p class="label">Approval Date</p>
@@ -155,12 +163,12 @@
                     <div>{{ drug.effective_time | date:'longDate' }}</div>
                   </div>
                 </div>
-                <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.purpose">
+                <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.openfda.route">
                   <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
-                    <p class="label">Usage</p>
+                    <p class="label">Route</p>
                   </div>
                   <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
-                    <div>{{ drug.purpose }}</div>
+                    <div>{{ drug.openfda.route }}</div>
                   </div>
                 </div>
               </mat-card-content>

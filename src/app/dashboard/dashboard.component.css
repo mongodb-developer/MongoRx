@@ -4,12 +4,13 @@
   padding-top: 2em;
 }
 
-.example-card {
-  width: 90%;
+.filter-tags {
+  margin-bottom: 1em;
 }
 
-.example-card-center {
-  width: 96%;
+.chart-cards {
+  margin: 0 auto;
+  width: 80%;
 }
 
 .mat-card-header {
@@ -91,13 +92,21 @@ a h2 span {
 
 .dash-summary {
   margin: 0 auto;
-  width: 97%;
   text-align: center;
   background: #fff;
   color: rgba(0, 0, 0, .87);
   border: 1px solid #9fcae5;
   padding: 10px 5px 5px 5 px !important;
   margin-bottom: 3em;
+}
+
+.view-trials, .view-trials:visited {
+  text-decoration: none;
+  color: #303030;
+}
+
+.view-trials:hover {
+  text-decoration: underline;
 }
 
 .footer {
@@ -110,4 +119,17 @@ a h2 span {
   color: rgb(192, 192, 192);
   text-shadow: 0 1px 1px #fff;
   margin: 1em 0;
+}
+
+:host ::ng-deep .code-view-container {
+  float: right !important;
+}
+
+.mat-card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mat-card-header > .code-view-container {
+  margin-top: -0.5em;
 }

@@ -1,0 +1,23 @@
+{
+    "field_name": "drugAutocomplete",
+    "function_name": "drugAutoCompleteCustomResolver",
+    "input_type": {
+        "properties": {
+            "limit": {
+                "bsonType": "long"
+            },
+            "skip": {
+                "bsonType": "long"
+            },
+            "term": {
+                "bsonType": "string"
+            }
+        },
+        "title": "DrugAutoCompleteInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Query",
+    "payload_type": "Drug_datum",
+    "payload_type_format": "generated-list"
+}

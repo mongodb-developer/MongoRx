@@ -1,1 +1,166 @@
-<div class="body-bg">drug-detail works!</div>
+<app-scroll-container [more]="hasMore()" [scrollOffset]="2500" [scrollDelay]="3000" (scrolled)="handleScroll($event)">
+  <div class="body-bg">
+    <div fxFlex fxLayout="row" class="drug-summary" fxLayoutGap="2em">
+      <div fxFlex fxLayout="column" class="two-thirds" fxFlex="66" *ngIf="drug && drug.openfda">
+        <h1>
+          <fa-icon [icon]="faFlask" class="icon detail"></fa-icon>
+          {{ titleCase(drug.openfda.brand_name) }} ({{ drug.openfda.generic_name }})
+        </h1>
+        <div fxFlex fxLayout="row" fxLayoutGap="10px" fxLayoutGap="2em">
+          <div class="one-third" fxFlex="50">
+            <h5 class="summary">Manufacturer</h5>
+            <h2 class="summary">{{ drug.openfda.manufacturer_name }}</h2>
+          </div>
+          <div class="one-third" fxFlex="50">
+            <h5 class="summary">Vendor also owns</h5>
+            <h2 class="summary">{{ drugCount && drugCount > 0 ? (drugCount | number) : "No" }} other products</h2>
+          </div>
+        </div>
+      </div>
+      <div fxFlex="34" fxLayoutAlign="center center" class="map">
+        <div style="width: 100%; height: 100%;">
+          <div fxLayout="column" fxFlex="100" class="drug-detail" *ngIf="trialsUsedIn">
+            <h2>
+              <fa-icon [icon]="faNotesMedical" class="icon detail"></fa-icon>
+              Did You Know?
+            </h2>
+            <div fxFlex fxLayout="column" class="one-third">
+              <h3 class="indent light">
+              <fa-icon [icon]="faChartLine" class="icon summary"></fa-icon>
+              There are <a class="drug-link" [routerLink]="['/trials']"
+              [queryParams]="{intervention_mesh_term: drug?.openfda?.generic_name}">{{trialsUsedIn[0]?.count.total > 0 ? (trialsUsedIn[0].count.total | number) : 'no'}} trials</a> where
+                {{ titleCase(drug?.openfda?.generic_name) }} is used
+              </h3>
+              <h3 class="indent light" *ngIf="trialedWithDrugs && trialedWithDrugs.length">
+                <fa-icon [icon]="faFlask" class="icon summary"></fa-icon>
+                {{ drug?.openfda?.brand_name }} is commonly trialed alongside
+                <span *ngFor="let twDrug of trialedWithDrugs | slice:1; let i = index">{{ i == trialedWithDrugs.length - 2 ? ' and ' : '' }}<a class="drug-link"
+                    [routerLink]="['/drugs']"
+                    [queryParams]="{q: twDrug.name}">{{ (twDrug.name).trim() }}</a>{{ i < trialedWithDrugs.length - 2 ? ',' : '' }}
+                </span>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="drug-overview">
+    <div fxLayout="column" fxFlex="100" class="drug-list-detail" *ngIf="drugs && drugs.length > 0">
+      <h2>
+        <fa-icon [icon]="faFlask" class="icon detail"></fa-icon>
+        Drug Overview
+      </h2>
+      <!-- drug dates -->
+      <div fxLayout="row" fxLayout.xs="column" *ngIf="drug && drug.description">
+        <div fxFlex="15" fxFlex.xs="85" fxFlexOrder="1">
+          <p class="label">Description</p>
+        </div>
+        <div fxFlex="85" fxFlex.xs="15" fxFlexOrder="2">
+          <div>{{ trimDescription(drug.description) }}</div>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayout.xs="column" *ngIf="drug && !drug.description && drug.purpose">
+        <div fxFlex="15" fxFlex.xs="85" fxFlexOrder="1">
+          <p class="label">Purpose</p>
+        </div>
+        <div fxFlex="85" fxFlex.xs="15" fxFlexOrder="2">
+          <div>{{ drug.purpose }}</div>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayout.xs="column" [ngClass]="{'section-end' : !drug.active_ingredient}">
+        <div fxFlex="15" fxFlex.xs="85" fxFlexOrder="1">
+          <p class="label">Approval Date</p>
+        </div>
+        <div fxFlex="85" fxFlex.xs="15" fxFlexOrder="2">
+          <div>{{ drug.effective_time | date:'longDate' }}</div>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.active_ingredient" class="section-end">
+        <div fxFlex="15" fxFlex.xs="85" fxFlexOrder="1">
+          <p class="label">Active Ingredient</p>
+        </div>
+        <div fxFlex="85" fxFlex.xs="15" fxFlexOrder="2">
+          <div>{{ trimActiveIngredient(drug.active_ingredient) }}</div>
+        </div>
+      </div>
+      <h2 class="section-start">
+        <fa-icon [icon]="faFlask" class="icon detail"></fa-icon>
+        {{drugs[0].count.total | number}} {{ drug.openfda.generic_name }} products
+      </h2>
+      <div fxLayout="column" fxFlex>
+        <!-- paging and stats -->
+        <div class="stats" style="margin-bottom: 1em;">Showing 1 - {{drugs.length | number}} of
+          {{drugs[0].count.total | number}}</div>
+        <!-- drug list -->
+        <div fxLayout="row" fxFlex class="drug-list">
+          <div fxLayout="column" fxFlex class="drug-list">
+            <div fxLayout="row wrap" fxLayoutGap="2em grid">
+              <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="50%" *ngFor="let drug of drugs">
+                <mat-card class="example-card">
+                  <mat-card-header>
+                    <mat-card-title>
+                      <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>
+                      <a class="drug-link"
+                        [routerLink]="['/drugs', drug.id]">{{ titleCase(drug.openfda.brand_name) }}</a>
+                    </mat-card-title>
+                  </mat-card-header>
+                  <mat-divider></mat-divider>
+                  <mat-card-content>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.openfda?.generic_name">
+                      <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
+                        <p class="label">Generic Name</p>
+                      </div>
+                      <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
+                        <div>{{ drug.openfda?.generic_name }}</div>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.openfda?.manufacturer_name?.length > 0">
+                      <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
+                        <p class="label">Manufacturer</p>
+                      </div>
+                      <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
+                        <div>
+                          <a class="facet-filter">{{ drug.openfda.manufacturer_name }}</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.active_ingredient">
+                      <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
+                        <p class="label">Active Ingredient</p>
+                      </div>
+                      <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
+                        <div>{{ trimActiveIngredient(drug.active_ingredient) }}</div>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.effective_time">
+                      <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
+                        <p class="label">Approval Date</p>
+                      </div>
+                      <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
+                        <div>{{ drug.effective_time | date:'longDate' }}</div>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayout.xs="column" *ngIf="drug.openfda.route">
+                      <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
+                        <p class="label">Route</p>
+                      </div>
+                      <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
+                        <div>{{ drug.openfda.route }}</div>
+                      </div>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            <!--div *ngIf="drugsLoading" class="spinner-item" style="height: 100vh;">
+                  <mat-progress-spinner [mode]="'indeterminate'" [diameter]="50" [value]="50"
+                    style="margin: 10px auto auto auto;">
+                  </mat-progress-spinner>
+                </div-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-scroll-container>

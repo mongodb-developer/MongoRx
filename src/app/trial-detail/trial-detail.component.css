@@ -6,6 +6,11 @@
     padding: 2em;
 }
 
+.trial-detail-header {
+    display: flex;
+    justify-content: space-between;
+}
+
 .section-start {
     padding-top: 1em;
 }
@@ -67,4 +72,12 @@ h5.summary {
 ::ng-deep .map-container {
     height: 100% !important;
     width: 100% !important;
+}
+
+:host ::ng-deep p > a {
+    color: #000 !important;      
+}
+
+:host ::ng-deep .code-view-container {
+    float: right !important;
 }

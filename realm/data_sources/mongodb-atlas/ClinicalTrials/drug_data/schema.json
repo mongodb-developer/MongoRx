@@ -1,0 +1,229 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "abuse": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "active_ingredient": {
+            "bsonType": "string"
+        },
+        "adverse_reactions": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "count": {
+            "bsonType": "object",
+            "properties": {
+                "lowerBound": {
+                    "bsonType": "int"
+                },
+                "total": {
+                    "bsonType": "int"
+                }
+            }
+        },
+        "description": {
+            "bsonType": "string"
+        },
+        "effective_time": {
+            "bsonType": "date"
+        },
+        "highlights": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "path": {
+                        "bsonType": "string"
+                    },
+                    "score": {
+                        "bsonType": "double"
+                    },
+                    "texts": {
+                        "bsonType": "array",
+                        "items": {
+                            "bsonType": "object",
+                            "properties": {
+                                "type": {
+                                    "bsonType": "string"
+                                },
+                                "value": {
+                                    "bsonType": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "id": {
+            "bsonType": "string"
+        },
+        "indications_and_usage": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "openfda": {
+            "bsonType": "object",
+            "properties": {
+                "application_number": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "brand_name": {
+                    "bsonType": "string"
+                },
+                "generic_name": {
+                    "bsonType": "string"
+                },
+                "is_original_packager": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "bool"
+                    }
+                },
+                "manufacturer_name": {
+                    "bsonType": "string"
+                },
+                "nui": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "original_packager_product_ndc": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "package_ndc": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "pharm_class_cs": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "pharm_class_epc": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "pharm_class_moa": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "pharm_class_pe": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "product_ndc": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "product_type": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "route": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "rxcui": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "spl_id": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "spl_set_id": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "substance_name": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "unii": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                },
+                "upc": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "purpose": {
+            "bsonType": "string"
+        },
+        "questions": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "risks": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "route": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "score": {
+            "bsonType": "double"
+        },
+        "version": {
+            "bsonType": "string"
+        }
+    },
+    "required": [
+        "_id"
+    ],
+    "title": "drug_datum"
+}

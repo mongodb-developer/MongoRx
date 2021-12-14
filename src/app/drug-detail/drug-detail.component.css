@@ -1,3 +1,99 @@
 .body-bg {
     background-color: #e4fcf8 !important;
 }
+
+.drug-overview {
+    background-color: #fff;
+}
+
+.drug-summary {
+    padding: 0 0 2em 2em;
+}
+
+.drug-detail {
+    padding: 2em 2em 2em 0;
+}
+
+.drug-detail h2 {
+    padding-top: 0.5em;
+}
+
+.drug-list-detail {
+    padding: 2em;
+}
+
+.section-start {
+    padding-top: 1em;
+}
+
+.section-start {
+    padding-top: 1em;
+}
+.section-end {
+    padding-bottom: 1em;
+    border-bottom: 1px solid #ccc;
+}
+
+.icon.detail {
+    background: #80cbc4;
+}
+.icon.summary {
+    background: #e4fcf8;
+}
+
+.icon{
+    color: #303030;
+    text-shadow: none;
+    margin: 0 0.325em 0 0;
+    border-radius: 50%;
+    font-size: 0.8em;
+    padding: 0.325em 0.4em 0.275em 0.4em;
+}
+
+.two-thirds {
+    padding-top: 2em;
+}
+.two-thirds h1 {
+    padding-bottom: 0.5em;
+    padding-left: 2em;
+    text-indent: -2em;
+}
+
+.map {
+    padding: 0;
+    margin-bottom: -2em;
+}
+
+.one-third {
+    padding: 2em;
+    background-color: #80cbc4;
+}
+
+h2.summary {
+    font-weight: 400 !important;
+    color: #fff;
+}
+
+.indent {
+    text-indent: -1.9em;
+    padding-left: 2em;
+}
+
+h2.light {
+    font-weight: 400;
+}
+
+h5.summary {
+    font-size: 1em;
+    font-weight: 600 !important;
+}
+
+::ng-deep .map-container {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+.drug-list {
+    padding-left: 0;
+    padding-right: 0;
+}

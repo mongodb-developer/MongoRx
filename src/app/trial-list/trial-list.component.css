@@ -19,12 +19,21 @@ h3.facetlist {
   font-size: 1em;
   font-weight: 700;
   color: #000;
+  margin-bottom: 0;
 }
 
 .facet-table {
   width: 100%;
   color: #424f60;
   margin-bottom: 2em;
+}
+
+h3.facetlist:nth-child(2) {
+  margin-top: 0.5em !important;
+}
+
+table.facet-table:nth-child(3) {
+  margin-top: 1em !important;
 }
 
 .filter-count {
@@ -51,8 +60,12 @@ a.facet-filter, a.facet-filter:visited {
   cursor: pointer;
 }
 
-a.facet-filter:hover {
-color: #4e9dd0;
+:host ::ng-deep div.trial-list > ol > li a {
+  color: #000 !important;
+}
+
+.code-view-container {
+  float: right !important;
 }
 
 /* Trial list */

@@ -1,9 +1,9 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
   integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-<div class="body-bg">
+<div class="body-bg" style="margin: 0 auto; width: 80%;">
   <!-- filter tags -->
-  <div style="margin: 0 auto; width: 80%;">
+  <div class="filter-tags">
     <!-- condition filters -->
     <mat-chip-list aria-label="Condition Filters" style="display: inline-block; justify-content: center;" removeable="true"
       *ngIf="conditionFilters.length > 0">
@@ -65,84 +65,110 @@
     <span class="clear-all" *ngIf="(conditionFilters.length + sponsorFilters.length + interventionFilters.length + productFilters.length + statusFilters.length) > 1" (click)="onClearAll()">Clear all</span>
   </div>
   <!-- chart cards -->
-  <div style="margin: 0 auto; width: 80%;">
-    <mat-grid-list cols="6" rowHeight="1:2.25">
-      <mat-grid-tile colspan="3">
-        <mat-card class="example-card" style="margin-left: 2%; margin-right: 5%;">
-          <mat-card-header>
-            <mat-card-title>
-              <fa-icon [icon]="faStethoscope" class="icon condition"></fa-icon>Condition
-            </mat-card-title>
-          </mat-card-header>
-          <mat-divider></mat-divider>
-          <mat-card-content>
-            <div id="condition-chart" style="width: 100%; height: 400px;"></div>
-          </mat-card-content>
-        </mat-card>
-      </mat-grid-tile>
-      <mat-grid-tile colspan="3">
-        <mat-card class="example-card" style="margin-right: 0px; margin-left: 0px;">
-          <mat-card-header>
-            <mat-card-title>
-              <fa-icon [icon]="faPlus" class="icon info"></fa-icon>Sponsor / Collaborator
-            </mat-card-title>
-          </mat-card-header>
-          <mat-divider></mat-divider>
-          <mat-card-content>
-            <div id="sponsor-chart" style="width: 100%; height: 400px;"></div>
-          </mat-card-content>
-        </mat-card>
-      </mat-grid-tile>
-      <mat-grid-tile colspan="6">
-        <mat-card class="example-card-center" style="margin-right: 0px; margin-left: 0px;">
-          <mat-card-header>
-            <mat-card-title>
-              <fa-icon [icon]="faMedkit" class="icon intervention"></fa-icon>Intervention
-            </mat-card-title>
-          </mat-card-header>
-          <mat-divider></mat-divider>
-          <mat-card-content>
-            <div id="intervention-chart" style="width: 100%; height: 400px;"></div>
-          </mat-card-content>
-        </mat-card>
-      </mat-grid-tile>
-      <mat-grid-tile colspan="3">
-        <mat-card class="example-card" style="margin-left: 2%; margin-right: 5%;">
-          <mat-card-header>
-            <mat-card-title>
-              <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>Products
-            </mat-card-title>
-          </mat-card-header>
-          <mat-divider></mat-divider>
-          <mat-card-content>
-            <div id="product-chart" style="width: 100%; height: 400px;"></div>
-          </mat-card-content>
-        </mat-card>
-      </mat-grid-tile>
-      <mat-grid-tile colspan="3">
-        <mat-card class="example-card" style="margin-right: 0px; margin-left: 0px;">
-          <mat-card-header>
-            <mat-card-title>
-              <fa-icon [icon]="faUserPlus" class="icon status"></fa-icon>Recruitment
-            </mat-card-title>
-          </mat-card-header>
-          <mat-divider></mat-divider>
-          <mat-card-content>
-            <div id="status-chart" style="width: 100%; height: 400px;"></div>
-          </mat-card-content>
-        </mat-card>
-      </mat-grid-tile>
-    </mat-grid-list>
-  </div>
-  <div style="margin-left: auto; margin-right: auto; padding-bottom: 3em; width: 80%;">
-    <mat-grid-list cols="6">
+  <div fxLayout="row wrap" fxLayoutGap="2em grid">
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%">
+      <mat-card>
+        <mat-card-header style="width: 100%;">
+          <mat-card-title>
+            <fa-icon [icon]="faStethoscope" class="icon condition"></fa-icon>Condition
+          </mat-card-title>          
+          <div class="code-view-container">
+            <button mat-mini-fab color="primary" aria-label="View chart code" (click)="openDialog('condition')">
+              <mat-icon>code</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div id="condition-chart" style="width: 100%; height: 400px;"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <fa-icon [icon]="faPlus" class="icon info"></fa-icon>Sponsor / Collaborator
+          </mat-card-title>
+          <div class="code-view-container">
+            <button mat-mini-fab color="primary" aria-label="View chart code" (click)="openDialog('sponsor')">
+              <mat-icon>code</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div id="sponsor-chart" style="width: 100%; height: 400px;"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex="100%">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <fa-icon [icon]="faMedkit" class="icon intervention"></fa-icon>Intervention
+          </mat-card-title>
+          <div class="code-view-container">
+            <button mat-mini-fab color="primary" aria-label="View chart code" (click)="openDialog('intervention')">
+              <mat-icon>code</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div id="intervention-chart" style="width: 100%; height: 400px;"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <fa-icon [icon]="faFlask" class="icon drug"></fa-icon>Products
+          </mat-card-title>
+          <div class="code-view-container">
+            <button mat-mini-fab color="primary" aria-label="View chart code" (click)="openDialog('drug')">
+              <mat-icon>code</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div id="product-chart" style="width: 100%; height: 400px;"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <fa-icon [icon]="faUserPlus" class="icon status"></fa-icon>Recruitment
+          </mat-card-title>
+          <div class="code-view-container">
+            <button mat-mini-fab color="primary" aria-label="View chart code" (click)="openDialog('status')">
+              <mat-icon>code</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div id="status-chart" style="width: 100%; height: 400px;"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex="100%">
       <div class="dash-summary">
-        <a [routerLink]="['/trials']" [queryParams]="chartFilters">
+        <a [routerLink]="['/trials']" [queryParams]="trialLinkFilters" class="view-trials">
           <h2>{{ facetCount | number}} clinical trials match the above criteria. <span>View Now.</span>
           </h2>
         </a>
       </div>
-      <div class="footer"><a href="https://www.clinicaltrials.gov">Data from clinicaltrials.gov</a></div>
-    </mat-grid-list>
+      <div class="code-view-container" style="margin-left: 60vw;">
+        <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('count')">
+          <mat-icon>code</mat-icon>
+        </button>
+      </div>
+    <div class="footer"><a href="https://www.clinicaltrials.gov">Data from clinicaltrials.gov</a></div>
+    </div>
   </div>
 </div>

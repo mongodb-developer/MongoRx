@@ -6,6 +6,9 @@ import { noop as _noop } from 'lodash-es';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { SearchTermService } from "../services/search-term.service";
 import { Subscription, Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DocumentNode } from 'graphql';
+import { CodeViewDialog } from '../code-view-dialog/code-view-dialog.component';
 
 @Component({
   selector: 'app-drug-list',
@@ -45,48 +48,35 @@ export class DrugListComponent implements OnInit, OnDestroy {
   //----------------
   // GraphQL queries
   //----------------
-  FIND_DRUGS = gql`
-    query FindDrugs($drugSearchInput: DrugSearchInput!) {
-      drugSearch(input: $drugSearchInput) {
-        _id,
-        active_ingredient
-        effective_time
-        indications_and_usage
-        openfda {
-          brand_name
-          generic_name
-          manufacturer_name
-        }
-        highlights {
-          path
-          score
-          texts {
-            type
-            value
-          }
-        }
-        score
-        count {
-          total
-        }
-      }
+  FIND_DRUGS = gql`query FindDrugs($drugSearchInput: DrugSearchInput!) {
+  drugSearch(input: $drugSearchInput) {
+    id,
+    active_ingredient
+    effective_time
+    indications_and_usage
+    openfda { brand_name generic_name manufacturer_name }
+    highlights {
+      path
+      score
+      texts { type value }
     }
-  `;
+    score
+    count { total }
+  }
+}`;
 
-  GET_FACETS = gql`
-    query GetFacets($drugFacetInput: DrugFacetInput!) {
-      drugFacets(input: $drugFacetInput) {
-        manufacturers {
-          count
-          name
-        }
-        purposes {
-          count
-          name
-        }
-      }
+  GET_FACETS = gql`query GetFacets($drugFacetInput: DrugFacetInput!) {
+  drugFacets(input: $drugFacetInput) {
+    manufacturers {
+      count
+      name
     }
-  `;
+    routes {
+      count
+      name
+    }
+  }
+}`;
 
   facetVariables = {
     "drugFacetInput": {
@@ -119,7 +109,7 @@ export class DrugListComponent implements OnInit, OnDestroy {
   // facet filters
   //------------
   manufacturerFilters: any[] = [];
-  purposeFilters: any[]      = [];
+  routeFilters: any[]      = [];
   facetFilters: string[]     = [];
 
   updateFacetFilters() : void {
@@ -146,8 +136,8 @@ export class DrugListComponent implements OnInit, OnDestroy {
     if (added === -1) this.updateFacetFilters();
   }
 
-  onPurposeFacetClicked(facetName: string): void {
-    let added = this.addFilter({"purpose": facetName}, this.purposeFilters);
+  onRouteFacetClicked(facetName: string): void {
+    let added = this.addFilter({"openfda.route": facetName}, this.routeFilters);
     if (added === -1) this.updateFacetFilters();
   }
 
@@ -192,12 +182,33 @@ export class DrugListComponent implements OnInit, OnDestroy {
         queryParamsHandling: 'merge'
       });
   }
+  removeSearchTerm(): void {
+
+    this.searchVariables.drugSearchInput.term = "";
+    this.facetVariables.drugFacetInput.term = "";
+    const queryParams: Params = {
+      //q: ""
+    };
+
+    this.router.navigate(
+      [], 
+      {
+        relativeTo: this.activatedRoute,
+        queryParams: queryParams,
+        queryParamsHandling: 'merge'
+      });
+
+    this.searchTermService.changeTerm("");
+  }
 
   removeSearchTermAndFilters(): void {
     this.searchVariables.drugSearchInput.term = "";
     this.searchVariables.drugSearchInput.filters = [];
     this.facetVariables.drugFacetInput.term = "";
     this.facetVariables.drugFacetInput.filters = [];
+    this.manufacturerFilters = [];
+    this.routeFilters = [];
+
     const queryParams: Params = {
       //q: ""
     };
@@ -237,10 +248,17 @@ export class DrugListComponent implements OnInit, OnDestroy {
     return Array.isArray(obj)
   }
 
+  getType(obj: any) {
+    return typeof obj;
+  }
+
   // utility function for formatting search results
-  titleCase(str: string): string {
+  titleCase(str: string | any): string {
+    if (typeof str !== "string") {
+      str = str.toString();
+    }
     const lowers = ["a", "and", "at", "by", "in", "for", "or", "of", "over", "the", "to"];
-    return str.split(' ').map(function (word, index) {
+    return str.split(' ').map(function (word: string, index: number) {
       if (word === "A" && index === 0) {
         return word;  // special case, title beginning with "A ..."
       }
@@ -278,7 +296,28 @@ export class DrugListComponent implements OnInit, OnDestroy {
     private _cdr: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private searchTermService: SearchTermService) {
+    private searchTermService: SearchTermService,
+    private dialog: MatDialog) {
+  }
+
+  openDialog(which: string): void {
+    let data = {
+      gqlQuery: which == 'facets' ? this.getGqlString(this.GET_FACETS) : this.getGqlString(this.FIND_DRUGS),
+      gqlQueryTitle: "GraphQL Query",
+      gqlQueryLang: "graphql",
+      gqlVars: JSON.stringify(which == 'facets' ? this.facetVariables : this.searchVariables, null, 2),
+      gqlVarsTitle: "Query Variables",
+      gqlVarsLang: "json"
+    }
+
+    const dialogRef = this.dialog.open(CodeViewDialog, {
+      width: '50%',
+      data: data
+    });
+  }
+
+  getGqlString(doc: DocumentNode): string | undefined {
+    return doc.loc && doc.loc.source.body;
   }
 
   ngOnInit() {
@@ -307,22 +346,9 @@ export class DrugListComponent implements OnInit, OnDestroy {
           if (keys.indexOf("openfda.manufacturer_name") >= 0) {
             qParam += `|openfda.manufacturer_name=${params.get('openfda.manufacturer_name')}`
           }
-          if (keys.indexOf("purpose") >= 0) {
-            qParam += `|purpose=${params.get('purpose')}`
+          if (keys.indexOf("openfda.route") >= 0) {
+            qParam += `|openfda.route=${params.get('openfda.route')}`
           }
-          /*
-          if (keys.indexOf("intervention") >= 0) {
-            qParam += `|intervention=${params.get('intervention')}`
-          }
-          if (keys.indexOf("sponsors.agency") >= 0) {
-            qParam += `|sponsors.agency=${params.get('sponsors.agency')}`
-          }
-          if (keys.indexOf("gender") >= 0) {
-            qParam += `|gender=${params.get('gender')}`
-          }
-          if (keys.indexOf("status") >= 0) {
-            qParam += `|status=${params.get('status')}`
-          }*/
           return qParam;
         }
       }) // TODO: add filters, skip, limit?
@@ -347,6 +373,7 @@ export class DrugListComponent implements OnInit, OnDestroy {
             let kv = param.split("=");
             let key = kv[0];
             let value = kv[1];
+            console.log(`key: ${key}`);
             if (key === "q" && value.trim().length > 0 && value.trim() !== "null") {
               if (this.searchVariables.drugSearchInput.term != value) {
                 this.searchVariables.drugSearchInput.term = value || '';
@@ -356,17 +383,9 @@ export class DrugListComponent implements OnInit, OnDestroy {
               }
             } else if (key === "openfda.manufacturer_name") {
               this.addFilter({[key]: value}, this.manufacturerFilters);
-            } else if (key === "purpose") {
-              this.addFilter({[key]: value}, this.purposeFilters);
-            } /*else if (key === "intervention") {
-              this.addFilter({[key]: value}, this.interventionFilters);
-            } else if (key === "sponsors.agency") {
-              this.addFilter({[key]: value}, this.sponsorFilters);
-            } else if (key === "gender") {
-              this.addFilter({[key]: value}, this.genderFilters);
-            } else if (key === "status") {
-              this.addFilter({[key]: value}, this.statusFilters);
-            }*/
+            } else if (key === "openfda.route") {
+              this.addFilter({[key]: value}, this.routeFilters);
+            }
           }
         }
         this.updateFacetFilters();
