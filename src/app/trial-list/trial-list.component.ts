@@ -112,6 +112,9 @@ export class TrialListComponent implements OnInit, OnDestroy {
   toggle = true;
   objectKeys = Object.keys;
   objectValues = Object.values;
+  trimTS(timestamp: string) : string {
+    return timestamp.substring(0, timestamp.indexOf("+0000 UTC")-1).replace(" ", "T");
+  }
 
   //------------
   // facet filters

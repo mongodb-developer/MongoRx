@@ -22,7 +22,7 @@
         <tbody>
           <ng-container *ngFor="let facet of facets[0].start_date | orderBy: 'name' : true">
             <tr *ngIf="facet.name !== 'other' && facet.count > 0">
-              <td><a class="facet-label" (click)="onStartDateFacetClicked(facet.name)">{{ facet.name | date: "yyyy" : "+0800" }}</a></td>
+              <td><a class="facet-label" (click)="onStartDateFacetClicked(facet.name)">{{ trimTS(facet.name) | date: "yyyy" : "+0800" }}</a></td>
               <td class="count">{{ facet.count }}</td>
             </tr>  
           </ng-container>
