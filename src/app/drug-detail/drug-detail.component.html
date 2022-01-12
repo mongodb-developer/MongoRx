@@ -39,6 +39,18 @@
                     [queryParams]="{q: twDrug.name}">{{ (twDrug.name).trim() }}</a>{{ i < trialedWithDrugs.length - 2 ? ',' : '' }}
                 </span>
               </h3>
+              <div class="code-view-container" style="margin-left: auto;">
+                <button mat-mini-fab color="primary" *ngIf="trialedWithDrugs && trialedWithDrugs.length"
+                        aria-label="View facet code"
+                        (click)="openDialog('trialedWith')">
+                  <mat-icon>code</mat-icon>
+                </button>
+                <button mat-mini-fab color="primary" *ngIf="!trialedWithDrugs || trialedWithDrugs.length === 0"
+                        aria-label="View facet code"
+                        (click)="openDialog('search')">
+                  <mat-icon>code</mat-icon>
+                </button>
+              </div>        
             </div>
           </div>
         </div>

@@ -97,3 +97,8 @@ h5.summary {
     padding-left: 0;
     padding-right: 0;
 }
+
+.code-view-container {
+    float: right !important;
+    margin-left: 1em;
+}  

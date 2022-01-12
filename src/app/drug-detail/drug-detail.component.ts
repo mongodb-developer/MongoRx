@@ -4,6 +4,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { faFlask, faChartLine, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
 import { noop as _noop } from 'lodash-es';
 import { Subscription } from 'rxjs';
+import { DocumentNode } from 'graphql';
+import { CodeViewDialog } from '../code-view-dialog/code-view-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-drug-detail',
@@ -75,16 +78,14 @@ export class DrugDetailComponent implements OnInit {
     }
   `;
 
-  GET_TRIALED_WITH_DRUGS = gql`
-    query GetFacetCount($drugTrialedWithFacetInput: DrugTrialedWithFacetInput!) {
-      drugTrialedWithFacet(input: $drugTrialedWithFacetInput) {
-        drugs {
-          name
-          count
-        }
-      }
+  GET_TRIALED_WITH_DRUGS = gql`query GetFacetCount($drugTrialedWithFacetInput: DrugTrialedWithFacetInput!) {
+  drugTrialedWithFacet(input: $drugTrialedWithFacetInput) {
+    drugs {
+      name
+      count
     }
-  `;
+  }
+}`;
 
   GET_FACETS = gql`
     query GetFacets($drugFacetInput: DrugFacetInput!) {
@@ -96,28 +97,26 @@ export class DrugDetailComponent implements OnInit {
     }
   `;
 
-  FIND_TRIALS = gql`
-    query FindTrials($searchInput: SearchInput!) {
-      search(input: $searchInput) {
-        nct_id
-        brief_title
-        start_date
-        completion_date
-        condition
-        intervention
-        intervention_mesh_term
-        sponsors {
-          agency
-        }
-        status
-        phase
-        score
-        count {
-          total
-        }
+  FIND_TRIALS = gql`query FindTrials($searchInput: SearchInput!) {
+    search(input: $searchInput) {
+      nct_id
+      brief_title
+      start_date
+      completion_date
+      condition
+      intervention
+      intervention_mesh_term
+      sponsors {
+        agency
+      }
+      status
+      phase
+      score
+      count {
+        total
       }
     }
-  `;
+  }`;
 
   FIND_DRUGS = gql`
     query FindDrugs($drugSearchInput: DrugSearchInput!) {
@@ -231,9 +230,30 @@ export class DrugDetailComponent implements OnInit {
     return str;
   }
 
+  openDialog(which: string): void {
+    let data = {
+      gqlQuery: which == 'trialedWith' ? this.getGqlString(this.GET_TRIALED_WITH_DRUGS) : this.getGqlString(this.FIND_TRIALS),
+      gqlQueryTitle: "GraphQL Query",
+      gqlQueryLang: "graphql",
+      gqlVars: JSON.stringify(which == 'trialedWith' ? this.trialedDrugQueryVariables : this.searchVariables, null, 2),
+      gqlVarsTitle: "Query Variables",
+      gqlVarsLang: "json"
+    }
+
+    const dialogRef = this.dialog.open(CodeViewDialog, {
+      width: '50%',
+      data: data
+    });
+  }
+
+  getGqlString(doc: DocumentNode): string | undefined {
+    return doc.loc && doc.loc.source.body;
+  }
+
   constructor(
     private apollo: Apollo,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
