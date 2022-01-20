@@ -331,10 +331,10 @@ checkPrerequisites
 configureMongoCli
 
 # download and expand trial dataset
-downloadTrialDataset
+#downloadTrialDataset
 
 # download and expand drug datasets
-downloadDrugDatasets
+#downloadDrugDatasets
 
 # import drug data into Atlas
 importDrugData
@@ -362,7 +362,7 @@ realm-cli users create -a ClinTrialGQL --type email --email "demo@gmail.com" --p
 # check saved aggregations on my cluster
 
 # Charts dashboard must be imported manually
-echo -e "📊 Import the dashboard file charts/Clinical Trials.charts to MongoDB Charts"
+echo -e "📊 NOTE: You need to manually import the dashboard file charts/Clinical Trials.charts to MongoDB Charts, then update the chart IDs and base URL in src/app/dashboard/dashboard.component.ts"
 
 # change graphql auth URL in src/app/graphql.module.ts
-echo -e "🔗 Update the GraphQL endpoint URL in src/app/graphql.module.ts to match your Realm application"
+echo -e "🔗 NOTE: You need to manually update the GraphQL endpoint URL in src/app/graphql.module.ts to match your Realm application"
