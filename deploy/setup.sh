@@ -20,7 +20,6 @@
 # commands used are installed. If any CLI is missing, an option to install it  #
 # is presented if one is available.                                            #
 #------------------------------------------------------------------------------#
-cd ..
 source ./env.config
 checkPrerequisites() {
     echo "Checking prerequisites..."
@@ -182,14 +181,14 @@ importRealmApp() {
     configureRealmCli
 
     # change cluster name in app's config.json
-    pushd realm/data_sources/mongodb-atlas >/dev/null 2>&1
+    pushd ../realm/data_sources/mongodb-atlas >/dev/null 2>&1
     jsonStr=`cat config.json | jq`  >/dev/null 2>&1
     jsonStr=$(jq '.config.clusterName = env.ATLAS_CLUSTER_NAME' <<<"$jsonStr")  >/dev/null 2>&1
     echo $jsonStr | jq > config.tmp && mv config.tmp config.json
     popd >/dev/null 2>&1
 
     # import the app
-    realm-cli push --local realm --remote ClinTrialGQL -y
+    realm-cli push --local ../realm --remote ClinTrialGQL -y
     echo -e "Updated app ID: `realm-cli apps list -f json | jq -r '.data[]'`"
 
     # done
@@ -202,7 +201,7 @@ importRealmApp() {
 # clinicaltrials.gov and extracts the XML data              #
 #-----------------------------------------------------------#
 downloadTrialDataset() {
-    pushd data 1> /dev/null
+    pushd ../data 1> /dev/null
     mkdir -p trials
     echo -e "\n💾 Downloading trial dataset..."
     curl https://clinicaltrials.gov/AllPublicXML.zip --output trials/AllPublicXML.zip
@@ -218,7 +217,7 @@ downloadTrialDataset() {
 # ope.fda.gov and extracts the JSON data                    #
 #-----------------------------------------------------------#
 downloadDrugDatasets() {
-    pushd data 1> /dev/null
+    pushd ../data 1> /dev/null
     mkdir -p drugs
     echo -e "\n💾 Downloading drug datasets...\n"
     for i in {1..10}
@@ -246,8 +245,7 @@ downloadDrugDatasets() {
 # removed to keep the dataset size as small as possible.    #
 #-----------------------------------------------------------#
 importDrugData() {
-    pushd data 1> /dev/null
-    pushd drugs 1> /dev/null
+    pushd ../data/drugs 1> /dev/null
     for i in {1..9}
     do
         echo -e "\n🌱 Importing drug data part ${i} of 10...\n"
@@ -255,7 +253,6 @@ importDrugData() {
     done
     echo -e "\n🌱 Importing drug data part 10 of 10...\n"
     cat drug-label-0010-of-0010.json | jq -r -c '.results[] | select(.openfda.brand_name != null) | {id, active_ingredient, effective_time, indications_and_usage, description, openfda}' | mongoimport "${ATLAS_CONN_STR}" --db ClinicalTrials --collection drug_data --numInsertionWorkers=6
-    popd 1> /dev/null
     popd 1> /dev/null
 }
 
@@ -292,7 +289,7 @@ createDBIndexes() {
 # imports it into Atlas.                                    #
 #-----------------------------------------------------------#
 importTrialData() {
-    pushd data 1> /dev/null
+    pushd ../data 1> /dev/null
     echo -e "\n📦 Installing node.js dependencies..."
     npm install --save
     echo -e "\n🏭 Converting XML data to JSON..."
@@ -308,6 +305,7 @@ importTrialData() {
 # and drug_data collections.                                #
 #-----------------------------------------------------------#
 createSearchIndexes() {
+    pushd .. 1> /dev/null
     echo -e "\n🔍 Creating drugs search index..."
     resp=`curl -s --digest -u ${ATLAS_API_PUBLIC_KEY}:${ATLAS_API_PRIVATE_KEY} \
         -H "Content-Type: application/json" \
@@ -321,6 +319,7 @@ createSearchIndexes() {
         -d @data/trials_search_index.json \
         "https://cloud.mongodb.com/api/atlas/v1.0/groups/${ATLAS_GROUP_ID}/clusters/${ATLAS_CLUSTER_NAME}/fts/indexes"`
     echo -e "Index `echo $resp | jq -r '.indexID'` is created"
+    popd 1> /dev/null
 }
 
 #-----------------------------------------------------------#
@@ -332,26 +331,26 @@ checkPrerequisites
 configureMongoCli
 
 # download and expand trial dataset
-#downloadTrialDataset
+downloadTrialDataset
 
 # download and expand drug datasets
-#downloadDrugDatasets
+downloadDrugDatasets
 
 # import drug data into Atlas
-#importDrugData
+importDrugData
 
 # import trial data into Atlas
-#importTrialData
+importTrialData
 
 # create DB indexes
-#createDBIndexes
+createDBIndexes
 
 # tweak schema -- array[1] => string, effective_time str => date
-#mongosh ${ATLAS_CONN_STR}ClinicalTrials data/tweak_schema.js
+mongosh ${ATLAS_CONN_STR}ClinicalTrials ../data/tweak_schema.js
 
 # create search indexes using
 #       `mongocli atlas clusters search indexes create -- bug w/ --file?`
-#createSearchIndexes
+createSearchIndexes
 
 # import Realm app
 importRealmApp
