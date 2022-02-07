@@ -14,6 +14,7 @@ exports = async (searchInput) => {
   const query = searchInput.term || "";  // TODO: change to no-op filter if no term
   const limit = searchInput.limit || 12;
   const skip = searchInput.skip || 0;
+  const sort = searchInput.sort || "";
   const filters = searchInput.filters ? searchInput.filters : [];
   const rangeQuery = filtersToRangeQuery(filters);
   console.log(`Range: ${JSON.stringify(rangeQuery)}`);
@@ -174,6 +175,27 @@ exports = async (searchInput) => {
     }
   }
   //console.log(`Pipeline ${JSON.stringify(pipeline)}`);
+  
+  // sorting
+  // TODO: replace hard-code date for origin with aggregated max date
+  switch(sort) {
+    case "start_date":
+      let sortByDateDesc = {
+        "near": {
+          "path": "start_date",
+          "origin": new Date("2023-02-03T00:00:00.000+00:00"),
+          "pivot": 31556952000
+        }
+      };
+      console.log(`pipeline[0]: ${JSON.stringify(pipeline[0])}`);
+      pipeline[0]["$search"].compound.should = sortByDateDesc;
+      console.log()
+      break;
+      
+    case "relevance":
+    case "":
+      // do nothing
+  }
   
   pipeline.push(addFields);
   pipeline.push({'$skip': skip});
