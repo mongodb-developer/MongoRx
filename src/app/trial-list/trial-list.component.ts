@@ -96,7 +96,8 @@ export class TrialListComponent implements OnInit, OnDestroy {
       "skip": "0",
       "limit": "12",
       "term": "",   // e.g., "arthritis"
-      "filters": [] as string[]
+      "filters": [] as string[],
+      "sort": ""
     }
   };
 
@@ -107,11 +108,20 @@ export class TrialListComponent implements OnInit, OnDestroy {
   faMedkit = faMedkit;
   faUserPlus = faUserPlus;
 
+  sortOrder = "relevance";
   selectable = true;
   removable = true;
   toggle = true;
   objectKeys = Object.keys;
   objectValues = Object.values;
+
+  onSortOrderChange(value: any) {
+    //console.log(value);
+    this.searchVariables.searchInput.sort = value === "relevance" ? "" : value;
+    this.searchVariables.searchInput.skip = "0";
+    this.doSearch(false, "from onSortOrderChange");
+  }
+
   trimTS(timestamp: string) : string {
     return timestamp.substring(0, timestamp.indexOf("+0000 UTC")-1).replace(" ", "T");
   }
@@ -136,7 +146,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
       .concat(this.productFilters)
       .concat(this.statusFilters)
       .concat(this.startDateFilters); // TODO: add more?
-    console.log(`All filters: ${JSON.stringify(allFilters)}`);
+    //console.log(`All filters: ${JSON.stringify(allFilters)}`);
     let queryStringFilters = new Set<string>();
     allFilters.map((filter) => {
       Object.keys(filter).map((key) => {
