@@ -3,6 +3,7 @@ import {APOLLO_OPTIONS} from 'apollo-angular';
 import {ApolloClientOptions, InMemoryCache, ApolloLink} from '@apollo/client/core';
 import {HttpLink} from 'apollo-angular/http';
 import {HttpClient, HttpHeaders, HttpXhrBackend} from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 const login: string = 'https://us-east-1.aws.realm.mongodb.com/api/client/v2.0/app/clintrialgql-vfmul/auth/providers/local-userpass/login';
 const uri = 'https://us-east-1.aws.realm.mongodb.com/api/client/v2.0/app/clintrialgql-vfmul/graphql'; // <-- add the URL of the GraphQL server here
@@ -13,8 +14,8 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   let response: any;
 
   httpClient.post(login, {
-      "username": "demo@gmail.com",
-      "password": "Passw0rd"
+      "username": environment.graphQLusername,
+      "password": environment.graphQLpassword
   }).subscribe(data => {
     response = data;
   });
