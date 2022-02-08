@@ -41,6 +41,7 @@ testem.log
 /typings
 
 # System Files
+.angular
 .DS_Store
 Thumbs.db
 data/dump
