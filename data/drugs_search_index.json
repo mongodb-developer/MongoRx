@@ -1,0 +1,50 @@
+{
+  "collectionName": "drug_data",
+  "database": "ClinicalTrials",
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "effective_time": {
+        "type": "date"
+      },
+      "openfda": {
+        "fields": {
+          "brand_name": [{
+            "type": "string"
+          }, {
+            "type": "autocomplete"
+          }, {
+            "type": "stringFacet"
+          }],
+          "generic_name": [{
+            "type": "string"
+          }, {
+            "type": "autocomplete"
+          }, {
+            "type": "stringFacet"
+          }],
+          "manufacturer_name": [{
+            "type": "string"
+          }, {
+            "type": "stringFacet"
+          }],
+          "route": [{
+            "type": "string"
+          }, {
+            "type": "stringFacet"
+          }]
+        },
+        "type": "document"
+      },
+      "purpose": [{
+        "type": "string"
+      }]
+    }
+  },
+  "name": "drugs",
+  "status": "STEADY",
+  "synonyms": []
+}
