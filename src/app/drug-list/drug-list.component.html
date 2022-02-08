@@ -62,7 +62,14 @@
       <div class="stats-no-chips"
         *ngIf="drugs && drugs.length > 0 && searchVariables.drugSearchInput.term.length == 0 && manufacturerFilters.length == 0">
         Showing 1 - {{drugs.length | number}} of {{drugs[0].count.total | number}}
-        <div class="code-view-container" style="margin-left: 60vw;">
+        <div class="code-view-container" style="margin-left: 50vw;">
+          <mat-form-field appearance="standard" style="padding-right: 1em;">
+            <mat-label>Sort by</mat-label>
+            <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)">
+              <mat-option value="relevance">Relevance</mat-option>
+              <mat-option value="effective_time">Approval Date</mat-option>
+            </mat-select>
+          </mat-form-field>  
           <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('drugs')">
             <mat-icon>code</mat-icon>
           </button>
@@ -72,6 +79,13 @@
         <!-- paging and stats -->
         <span class="stats" *ngIf="drugs && drugs.length > 0">Showing 1 - {{drugs.length | number}} of {{drugs[0].count.total | number}}</span>
         <div class="code-view-container">
+          <mat-form-field appearance="standard" style="padding-right: 1em;">
+            <mat-label>Sort by</mat-label>
+            <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)">
+              <mat-option value="relevance">Relevance</mat-option>
+              <mat-option value="effective_time">Approval Date</mat-option>
+            </mat-select>
+          </mat-form-field>  
           <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('drugs')">
             <mat-icon>code</mat-icon>
           </button>

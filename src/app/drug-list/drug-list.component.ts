@@ -45,6 +45,14 @@ export class DrugListComponent implements OnInit, OnDestroy {
     this.doSearch(true, "from getData");
   }
 
+  sortOrder = "relevance";
+  onSortOrderChange(value: any) {
+    console.log(value);
+    this.searchVariables.drugSearchInput.sort = value === "relevance" ? "" : value;
+    this.searchVariables.drugSearchInput.skip = "0";
+    this.doSearch(false, "from onSortOrderChange");
+  }
+
   //----------------
   // GraphQL queries
   //----------------
@@ -91,7 +99,8 @@ export class DrugListComponent implements OnInit, OnDestroy {
       "skip": "0",
       "limit": "12",
       "term": "",   // e.g., "carboplatin"
-      "filters": [] as string[]
+      "filters": [] as string[],
+      "sort": ""
     }
   };
 
