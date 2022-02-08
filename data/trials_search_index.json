@@ -1,0 +1,97 @@
+{
+  "analyzers": [{
+    "charFilters": [],
+    "name": "keywordLowerAnalyzer",
+    "tokenFilters": [{
+      "type": "lowercase"
+    }],
+    "tokenizer": {
+      "type": "keyword"
+    }
+  }],
+  "collectionName": "trials",
+  "database": "ClinicalTrials",
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "brief_summary": {
+        "type": "string"
+      },
+      "brief_title": [{
+        "type": "string"
+      }, {
+        "type": "autocomplete"
+      }],
+      "completion_date": [{
+        "type": "date"
+      }],
+      "condition": [{
+        "type": "string"
+      }, {
+        "type": "stringFacet"
+      }],
+      "condition_mesh_term": [{
+        "type": "string"
+      }, {
+        "type": "stringFacet"
+      }],
+      "detailed_description": {
+        "type": "string"
+      },
+      "gender": [{
+        "type": "string"
+      }, {
+        "type": "stringFacet"
+      }],
+      "intervention": [{
+        "type": "string"
+      }, {
+        "type": "stringFacet"
+      }],
+      "intervention_mesh_term": [{
+        "type": "string"
+      }, {
+        "type": "stringFacet"
+      }],
+      "maximum_age": {
+        "type": "number"
+      },
+      "minimum_age": {
+        "type": "number"
+      },
+      "nct_id": [{
+        "type": "string"
+      }, {
+        "type": "autocomplete"
+      }],
+      "official_title": [{
+        "type": "string"
+      }, {
+        "type": "autocomplete"
+      }],
+      "sponsors": {
+        "fields": {
+          "agency": [{
+            "analyzer": "keywordLowerAnalyzer",
+            "type": "string"
+          }, {
+            "type": "stringFacet"
+          }]
+        },
+        "type": "document"
+      },
+      "start_date": [{
+        "type": "date"
+      }],
+      "status": [{
+        "analyzer": "keywordLowerAnalyzer",
+        "type": "string"
+      }, {
+        "type": "stringFacet"
+      }]
+    }
+  },
+  "name": "default",
+  "status": "STEADY",
+  "synonyms": []
+}

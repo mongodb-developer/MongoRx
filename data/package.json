@@ -1,0 +1,16 @@
+{
+  "name": "data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "parseTrialData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Roy Kiesler",
+  "license": "ISC",
+  "dependencies": {
+    "graceful-fs": "^4.2.4",
+    "mongodb": "^4.2.1",
+    "xml2js": "^0.4.23"
+  }
+}
