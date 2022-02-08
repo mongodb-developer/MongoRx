@@ -15,6 +15,9 @@
             "skip": {
                 "bsonType": "long"
             },
+            "sort": {
+                "bsonType": "string"
+            },
             "term": {
                 "bsonType": "string"
             }
