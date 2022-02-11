@@ -45,9 +45,28 @@ export class DrugListComponent implements OnInit, OnDestroy {
     this.doSearch(true, "from getData");
   }
 
+  sortOptions = [{
+    field: "relevance",
+    label: "Relevance"
+  }, {
+    field: "effective_time",
+    label: "Approval Date"
+  }, {
+    field: "brand_name",
+    label: "Brand Name"
+  }, {
+    field: "generic_name",
+    label: "Generic Name"
+  }, {
+    field: "manufacturer_name",
+    label: "Manufacturer Name"
+  }];
   sortOrder = "relevance";
   onSortOrderChange(value: any) {
     console.log(value);
+    if (value === "brand_name") {
+
+    }
     this.searchVariables.drugSearchInput.sort = value === "relevance" ? "" : value;
     this.searchVariables.drugSearchInput.skip = "0";
     this.doSearch(false, "from onSortOrderChange");
