@@ -65,7 +65,7 @@
         <div class="code-view-container" style="margin-left: 50vw;">
           <mat-form-field appearance="standard" style="padding-right: 1em;">
             <mat-label>Sort by</mat-label>
-            <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)">
+            <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)" disableOptionCentering panelClass="sortPanelClass">
               <mat-option *ngFor="let option of sortOptions" [value]="option.field">{{option.label}}</mat-option>
             </mat-select>
           </mat-form-field>  
@@ -80,7 +80,7 @@
         <div class="code-view-container">
           <mat-form-field appearance="standard" style="padding-right: 1em;">
             <mat-label>Sort by</mat-label>
-            <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)">
+            <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)" disableOptionCentering panelClass="sortPanelClass">
               <mat-option *ngFor="let option of sortOptions" [value]="option.field">{{option.label}}</mat-option>
               <!--mat-option value="relevance">{{sortOrder.label}}</-mat-option>
               <mat-option value="effective_time">Approval Date</mat-option>

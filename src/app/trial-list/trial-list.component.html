@@ -95,7 +95,7 @@
       <div class="code-view-container" style="margin-left: auto">
         <mat-form-field appearance="standard" style="padding-right: 1em;">
           <mat-label>Sort by</mat-label>
-          <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)">
+          <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)" disableOptionCentering panelClass="sortPanelClass">
             <mat-option value="relevance">Relevance</mat-option>
             <mat-option value="start_date">Start Date</mat-option>
           </mat-select>
@@ -112,7 +112,7 @@
       <div class="code-view-container" style="margin-left: auto;">
         <mat-form-field appearance="standard" style="padding-right: 1em;">
           <mat-label>Sort by</mat-label>
-          <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)">
+          <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)"  disableOptionCentering panelClass="sortPanelClass">
             <mat-option value="relevance">Relevance</mat-option>
             <mat-option value="start_date">Start Date</mat-option>
           </mat-select>

@@ -296,3 +296,7 @@ span.type.recruitment,
 .stats-with-chips {
   width: 100%;
 }
+
+::ng-deep .sortPanelClass {
+  margin-top: 20px !important; 
+}

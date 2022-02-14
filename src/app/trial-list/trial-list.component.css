@@ -255,3 +255,7 @@ span.type.recruitment,
   font-size: 0.9em !important;
   padding-right: 5px !important;
 }
+
+::ng-deep .sortPanelClass {
+  margin-top: 20px !important; 
+}
