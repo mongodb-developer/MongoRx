@@ -46,6 +46,8 @@
   },
   "storedSource": {
     "include": [
+      "id",
+      "effective_time",
       "openfda.brand_name",
       "openfda.generic_name",
       "openfda.manufacturer_name"
