@@ -216,27 +216,38 @@ export class TrialDetailComponent implements OnInit {
   
   openDialog(which: string): void {
     let data:any = {};
-    data.gqlQuery = `this.geocoder.geocode({
-  address: "${this.trial.sponsors.agency}"
-}).subscribe(({results}) => {
-  this.sponsorAddress = results[0].formatted_address;
-  const location = results[0].geometry.location.toJSON();
-  this.center = {lat: location.lat, lng: location.lng};
-  this.markers.push({
-    position: {
-      lat: location.lat,
-      lng: location.lng,
-    },
-    title: "${this.trial.sponsors.agency}",
-    visible: true
-  });
-});`;
+    if (which == "mlt") {
+      data = {
+        gqlQuery: this.getGqlString(this.GET_MLT_TRIAL),
+        gqlQueryTitle: "GraphQL Query",
+        gqlQueryLang: "graphql",
+        gqlVars: JSON.stringify(this.mltTrialQueryVariables, null, 2),
+        gqlVarsTitle: "Query Variables",
+        gqlVarsLang: "json"
+      }
+    } else {
+      data.gqlQuery = `this.geocoder.geocode({
+    address: "${this.trial.sponsors.agency}"
+  }).subscribe(({results}) => {
+    this.sponsorAddress = results[0].formatted_address;
+    const location = results[0].geometry.location.toJSON();
+    this.center = {lat: location.lat, lng: location.lng};
+    this.markers.push({
+      position: {
+        lat: location.lat,
+        lng: location.lng,
+      },
+      title: "${this.trial.sponsors.agency}",
+      visible: true
+    });
+  });`;
 
-    data.gqlQueryTitle = "TypeScript Code";
-    data.gqlQueryLang = "typescript";
-    data.gqlVars = "";
-    data.gqlVarsTitle = "";
-    data.gqlVarsLang = "";
+      data.gqlQueryTitle = "TypeScript Code";
+      data.gqlQueryLang = "typescript";
+      data.gqlVars = "";
+      data.gqlVarsTitle = "";
+      data.gqlVarsLang = "";
+    }
 
     const dialogRef = this.dialog.open(CodeViewDialog, {
       width: '50%',
