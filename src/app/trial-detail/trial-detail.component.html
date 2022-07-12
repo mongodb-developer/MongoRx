@@ -13,7 +13,7 @@
         </div>
         <div class="one-third" fxFlex="33">
           <h5 class="summary">Enrollment</h5>
-          <h2 class="summary">{{ trial?.enrollment && trial?.enrollment > 0 ? ((trial.enrollment | number) + " - " + trial.gender + " Gender") : (trial?.enrollment ? (trial.gender + " Gender") : trial.gender + " Gender") }}</h2>
+          <h2 class="summary">{{ trial?.enrollment && trial?.enrollment > 0 ? ((trial.enrollment | number) + " - " + trial?.gender + " Gender") : (trial?.enrollment ? (trial?.gender + " Gender") : trial?.gender + " Gender") }}</h2>
         </div>
         <div class="one-third" fxFlex="33">
           <h5 class="summary">Recruitment Status</h5>
@@ -35,7 +35,7 @@
   </div>
 </div>
 <div>
-  <div fxLayout="column" fxFlex="75" class="trial-detail">
+  <div fxLayout="column" class="two-thirds" fxFlex="66" class="trial-detail">
     <div fxLayout="row" fxLayout.xs="column" class="trial-detail-header">
       <h2>
         <fa-icon [icon]="faChartLine" class="icon detail"></fa-icon>
@@ -46,7 +46,7 @@
           <mat-icon>code</mat-icon>
         </button>
       </div>
-      </div>
+    </div>
     <!-- trial dates -->
     <div fxLayout="row" fxLayout.xs="column">
       <div fxFlex="15" fxFlex.xs="85" fxFlexOrder="1">
@@ -119,7 +119,7 @@
       </div>
       <div fxFlex="85" fxFlex.xs="15" *ngIf="trial && trial.sponsors && trial.sponsors.agency">
         <div>
-          <p>{{ sponsorAddress }}</p>
+          <p>{{ sponsorAddress ? sponsorAddress : "Unknown" }}</p>
         </div>
       </div>
     </div>
@@ -160,7 +160,7 @@
       </div>
     </div>
     <!-- description -->
-    <div fxLayout="row" fxLayout.xs="column" *ngIf="trial && trial.detailed_description" class="section-start section-end">
+    <div fxLayout="row" fxLayout.xs="column" *ngIf="trial && trial.detailed_description" class="section-start">
       <div fxFlex="15" fxFlex.xs="85">
         <p class="label">Description</p>
       </div>
@@ -172,7 +172,7 @@
       </div>
     </div>
     <!-- source -->
-    <div fxLayout="row" fxLayout.xs="column" *ngIf="trial && trial.url" class="section-start">
+    <div fxLayout="row" fxLayout.xs="column" *ngIf="trial && trial.url" class="section-start section-end">
       <div fxFlex="15" fxFlex.xs="85">
         <p class="label">Source</p>
       </div>
@@ -181,6 +181,43 @@
           <a [attr.href]="trial.url" class="trial-link">{{ trial.url }}</a>
         </div>
       </div>
+    </div>
+  </div>
+  <div fxLayout="column" class="one-third" fxFlex="33" class="trial-detail">
+    <!-- related trials -->
+    <div fxLayout="row" fxLayout.xs="column" class="trial-detail-header">
+      <h2>
+        <fa-icon [icon]="faChartLine" class="icon detail"></fa-icon>
+        More Like This Trial
+      </h2>
+      <div class="code-view-container">
+        <button mat-mini-fab color="primary" aria-label="View related trials code" (click)="openDialog('count')">
+          <mat-icon>code</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayout.xs="column" class="trial-detail-header">
+      <ol class="result-list" *ngIf="mltTrials" class="result-list">
+        <li class="result" *ngFor="let mltTrial of mltTrials">
+          <div fxLayout="row" fxFlex="100%" class="title">
+            <p>
+              <a class="trial-link" [routerLink]="['/trials', mltTrial.nct_id]" (click)="onMltLinkClicked(mltTrial.nct_id)">{{ titleCase(mltTrial.official_title ? mltTrial.official_title : mltTrial.brief_title) }}</a>
+            </p>
+          </div>
+          <!-- trial dates -->
+          <div fxLayout="row" fxLayout.xs="column">
+            <div fxFlex="25" fxFlex.xs="75" fxFlexOrder="1">
+              <p class="label">Trial dates</p>
+            </div>
+            <div fxFlex="75" fxFlex.xs="25" fxFlexOrder="2">
+              <div>{{ mltTrial.start_date ? (mltTrial.start_date | date: 'MM/dd/yyyy') : 'TBD' }}
+                <span class="range">→</span>
+                {{ mltTrial.completion_date && mltTrial.completion_date !== "1970-01-01T00:00:00Z" ? (mltTrial.completion_date | date: 'MM/dd/yyyy') : 'TBD' }}
+              </div>
+            </div>
+          </div>
+        </li>
+      </ol>
     </div>
   </div>
 </div>

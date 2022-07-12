@@ -49,6 +49,7 @@ export class TrialDetailComponent implements OnInit {
 
   // trial data
   trial: any;
+  mltTrials: any;
   nctId: string | null;
   sponsorAddress: string | null;
 
@@ -56,6 +57,7 @@ export class TrialDetailComponent implements OnInit {
   // GraphQL queries
   //----------------
   trialQuerySubscription: Subscription | undefined;
+  mltTrialQuerySubscription: Subscription | undefined;
 
   GET_TRIAL = gql`
     query GetTrial($trialQueryInput: TrialQueryInput!) {
@@ -75,6 +77,15 @@ export class TrialDetailComponent implements OnInit {
         sponsors {
           agency
         }
+        facility {
+          name
+          address {
+            city
+            country
+            state
+            zip
+          }
+        }
         status
         url
         phase
@@ -88,6 +99,25 @@ export class TrialDetailComponent implements OnInit {
     }
   };
 
+  GET_MLT_TRIAL = gql`
+    query FindSimilarTrials($mltTrialInput: MltTrialInput!) {
+      moreLikeThisTrial(input: $mltTrialInput) {
+        nct_id
+        brief_title
+        start_date
+        completion_date
+      }
+    }
+  `;
+
+  mltTrialQueryVariables = {
+    mltTrialInput: {
+      brief_title: "" as string | any,
+      detailed_description: "" as string | any,
+      skip: "0",
+      limit: "12",
+    }
+  };
   // utility function to be used in *ngIf expressions
   isArray(obj: any) {
     return Array.isArray(obj)
@@ -116,12 +146,32 @@ export class TrialDetailComponent implements OnInit {
       this.googleMapsApiLoaded = googleMapsLoader.isApiLoaded$;
   }
 
+  getMltTrials(): void {
+    if (this.trial) {
+      this.mltTrialQueryVariables.mltTrialInput.brief_title = this.trial.brief_title;
+      this.mltTrialQueryVariables.mltTrialInput.detailed_description = this.trial.detailed_description
+      this.mltTrialQuerySubscription = this.apollo.watchQuery<any>({
+        query: this.GET_MLT_TRIAL,
+        variables: this.mltTrialQueryVariables
+      })
+        .valueChanges
+        .subscribe(({ data, loading }) => {
+          this.mltTrials = data.moreLikeThisTrial.slice(1);
+        });  
+    }
+  }
+
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.nctId = params.get('id');
       this.trialQueryVariables.trialQueryInput.nct_id = this.nctId;
+      //console.log(`paramMap changed to ${this.nctId}`);
+      this.loadTrialData();
     });
+  }
 
+  loadTrialData(): void {
+    //console.log(`Loading trial data for ${this.trialQueryVariables.trialQueryInput.nct_id}`);
     this.trialQuerySubscription = this.apollo.watchQuery<any>({
       query: this.GET_TRIAL,
       variables: this.trialQueryVariables
@@ -129,27 +179,35 @@ export class TrialDetailComponent implements OnInit {
       .valueChanges
       .subscribe(({ data, loading }) => {
         this.trial = data.trial;
-        console.log(`Sponsor: ${this.trial.sponsors.agency}`);
+        //console.log(`Sponsor: ${this.trial.sponsors.agency}`);
+        //console.log(`Facility: ${this.trial.facility?.name}`);
+        this.getMltTrials();
         this.googleMapsApiLoaded.subscribe(val => {
           this.geocoder.geocode({
-            address: this.trial.sponsors.agency
+            address: this.trial.facility?.name ? this.trial.facility?.name : this.trial.sponsors.agency
           }).subscribe(({results}) => {
-            //console.log(JSON.stringify(results));
-            this.sponsorAddress = results[0].formatted_address;
-            const location = results[0].geometry.location.toJSON();
-            this.center = {lat: location.lat, lng: location.lng};
-            console.log(location);
-            this.markers.push({
-              position: {
-                lat: location.lat,
-                lng: location.lng,
-              },
-              title: this.trial.sponsors.agency,
-              visible: true
-            });
+            //console.log(`Geocoder results: ${JSON.stringify(results)}`);
+            if (results.length > 0) {
+              this.sponsorAddress = results[0].formatted_address;
+              const location = results[0].geometry.location.toJSON();
+              this.center = {lat: location.lat, lng: location.lng};
+              console.log(location);
+              this.markers.push({
+                position: {
+                  lat: location.lat,
+                  lng: location.lng,
+                },
+                title: this.trial.sponsors.agency,
+                visible: true
+              });
+            }
           });
         });
       });
+  }
+
+  onMltLinkClicked(nctId: string) {
+    this.trialQueryVariables.trialQueryInput.nct_id = nctId;
   }
 
   getGqlString(doc: DocumentNode): string | undefined {
@@ -184,5 +242,10 @@ export class TrialDetailComponent implements OnInit {
       width: '50%',
       data: data
     });
+  }
+
+  ngOnDestroy() {
+    this.trialQuerySubscription?.unsubscribe();
+    this.mltTrialQuerySubscription?.unsubscribe();
   }
 }

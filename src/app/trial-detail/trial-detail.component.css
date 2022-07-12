@@ -81,3 +81,15 @@ h5.summary {
 :host ::ng-deep .code-view-container {
     float: right !important;
 }
+
+li.result,
+.mat-list-item.result {
+  display: list-item !important;
+  /*margin: 0 0 0.5em 0 !important;
+  padding: 1em 0 !important;*/
+  line-height: 1.4 !important;
+  width: 100% !important;
+  word-wrap: break-word !important;
+  border-bottom: 1px solid #ccc !important;
+  font-size: 0.9em !important;
+}
