@@ -1,7 +1,13 @@
 [
     {
-        "name": "trialSearchCustomResolver",
-        "private": false
+        "name": "drugTrialedWithFacetCustomResolver",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "drugsFacetsCustomResolver",
+        "private": false,
+        "run_as_system": true
     },
     {
         "name": "resetFunc",
@@ -9,7 +15,7 @@
         "can_evaluate": {}
     },
     {
-        "name": "autoCompleteCustomResolver",
+        "name": "trialSearchCustomResolver",
         "private": false
     },
     {
@@ -19,12 +25,7 @@
         "can_evaluate": {}
     },
     {
-        "name": "drugsFacetsCustomResolver",
-        "private": false,
-        "run_as_system": true
-    },
-    {
-        "name": "drugSearchCustomResolver",
+        "name": "autoCompleteCustomResolver",
         "private": false
     },
     {
@@ -32,7 +33,11 @@
         "private": false
     },
     {
-        "name": "drugTrialedWithFacetCustomResolver",
+        "name": "drugSearchCustomResolver",
+        "private": false
+    },
+    {
+        "name": "mltTrialCustomResolver",
         "private": false,
         "run_as_system": true
     }

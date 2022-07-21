@@ -1,0 +1,26 @@
+{
+    "field_name": "moreLikeThisTrial",
+    "function_name": "mltTrialCustomResolver",
+    "input_type": {
+        "properties": {
+            "brief_title": {
+                "type": "string"
+            },
+            "detailed_description": {
+                "type": "string"
+            },
+            "limit": {
+                "bsonType": "long"
+            },
+            "skip": {
+                "bsonType": "long"
+            }
+        },
+        "title": "mltTrialInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Query",
+    "payload_type": "Trial",
+    "payload_type_format": "generated-list"
+}
