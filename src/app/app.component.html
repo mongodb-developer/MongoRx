@@ -13,9 +13,9 @@
       <div [style.width.%]=100>
         <form [style.width.%]=100 (ngSubmit)="onSubmit()" [formGroup]="searchBox">
           <mat-form-field *ngIf="currentRoute && currentRoute.startsWith('/drugs')"
-                          color="primary" 
-                          appearance="fill" 
-                          [style.width.%]=88 
+                          color="primary"
+                          appearance="fill"
+                          [style.width.%]=65
                           [style.margin-top.em]=1>
             <mat-label>Search by condition type, trial name, or drug name...</mat-label>
             <input type="text"
@@ -29,9 +29,9 @@
             </mat-autocomplete>
           </mat-form-field>
           <mat-form-field *ngIf="currentRoute && !currentRoute.startsWith('/drugs')"
-                          color="primary" 
-                          appearance="fill" 
-                          [style.width.%]=88 
+                          color="primary"
+                          appearance="fill"
+                          [style.width.%]=65
                           [style.margin-top.em]=1>
             <mat-label>Search by condition type, trial name, or drug name...</mat-label>
             <input type="text"
@@ -45,14 +45,22 @@
             </mat-autocomplete>
           </mat-form-field>
           <span>&nbsp;</span>
-          <button mat-flat-button color="primary">Search</button>
+          <button mat-flat-button color="primary" type="submit">Search</button>
+          <span>&nbsp;&nbsp;</span>
+          <mat-slide-toggle
+            [checked]="useVectorSearch"
+            [disabled]="currentRoute.startsWith('/drugs')"
+            color="primary"
+            (change)="onUseVectorToggle()">
+            Use Vector Search
+          </mat-slide-toggle>
         </form>
       </div>
     </mat-grid-tile>
     <!-- empty -->
     <mat-grid-tile><span></span></mat-grid-tile>
   </mat-grid-list>
-  
+
   <nav mat-tab-nav-bar>
     <a mat-tab-link
       *ngFor="let link of navLinks"

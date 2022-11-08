@@ -26,6 +26,8 @@ export class AppComponent implements OnInit, OnDestroy {
   drugControl: FormControl;
   trialControl: FormControl;
   searchTermSubscription: Subscription | undefined;
+  useVectorSubscription: Subscription | undefined;
+  useVectorSearch: boolean = false;
 
   //----------------
   // GraphQL queries
@@ -46,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     }
   `;
-  
+
   FIND_DRUGS = gql`
     query FindDrugs($searchInput: DrugAutoCompleteInput!) {
       drugAutocomplete(input: $searchInput) {
@@ -70,8 +72,30 @@ export class AppComponent implements OnInit, OnDestroy {
     "searchInput": {
       "skip": "0",
       "limit": "5",
-      "term": ""   // e.g., "arthritis"
-      //"filters": [""] // e.g., ["condition=Neoplasms","intervention=procedure"]
+      "term": "",   // e.g., "arthritis"
+      "filters": [] as string[], // e.g., ["condition=Neoplasms","intervention=procedure"]
+      "useVactor": false
+    }
+  };
+
+  GET_FACETS = gql`query GetFacets($facetInput: FacetInput!) {
+    facets(input: $facetInput) {
+      completion_date { count name }
+      conditions { count name }
+      drugs { count name }
+      genders { count name }
+      intervention_types { count name }
+      interventions { count name }
+      sponsors { count name }
+      start_date { count name }
+    }
+  }`;
+
+  facetVariables = {
+    "facetInput": {
+      "term": "",   // e.g., "cancer"
+      "countOnly": false,
+      "filters": [] as string[] // e.g., ["condition=Neoplasms","intervention=procedure"]
     }
   };
 
@@ -86,8 +110,23 @@ export class AppComponent implements OnInit, OnDestroy {
       this.router.navigate(['/drugs'], { queryParams: {q: this.drugControl.value }});
     } else {
       console.log(`Search for '${this.trialControl.value}' on ${this.currentRoute}`);
-      this.router.navigate(['/trials'], { queryParams: {q: this.trialControl.value }});
+      this.router.navigate(['/trials'], {
+        queryParams: {
+          q: this.trialControl.value,
+          useVector: this.useVectorSearch
+        }
+      });
     }
+  }
+
+  onUseVectorToggle(): void {
+    this.useVectorSearch = !this.useVectorSearch;
+    this.router.navigate(['/trials'], {
+      queryParams: {
+        q: this.trialControl.value,
+        useVector: this.useVectorSearch
+      }
+    });
   }
 
   constructor(
@@ -98,7 +137,7 @@ export class AppComponent implements OnInit, OnDestroy {
       router.events.subscribe(event => {
         // keep track of the current page -- use it in onSubmit()
         if (event instanceof NavigationEnd) {
-          this.currentRoute = event.url;          
+          this.currentRoute = event.url;
         }
       });
 
@@ -150,6 +189,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.drugControl.setValue(term);
       this.trialControl.setValue(term);
     });
+    this.useVectorSubscription = this.searchTermService.currentVector.subscribe(flag => {
+      this.useVectorSearch = flag;
+    });
   }
 
   ngOnDestroy() {
@@ -159,12 +201,16 @@ export class AppComponent implements OnInit, OnDestroy {
   filterDrugs(val: string) : Observable<any[]> {
     console.log(`Filtering drug val: ${val}`);
     this.searchVariables.searchInput.term = val;
+    // shallow-clone searchInput and remove filters/vectors for autocomplete
+    let autoCompleteVariables = JSON.parse(JSON.stringify(this.searchVariables));
+    delete autoCompleteVariables.searchInput.filters;
+    delete autoCompleteVariables.searchInput.useVactor;
 
     // call the function which makes graphQL request
     if (val.length > 1) {
       return this.apollo.watchQuery({
         query: this.FIND_DRUGS,
-        variables: this.searchVariables
+        variables: autoCompleteVariables
       }).valueChanges.pipe(map(({data}) => {
         let retVal = (data as any);
         return retVal.drugAutocomplete;
@@ -176,12 +222,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
   filterTrials(val: string) : Observable<any[]> {
     this.searchVariables.searchInput.term = val;
-
+    // shallow-clone searchInput and remove filters/vectors for autocomplete
+    let autoCompleteVariables = JSON.parse(JSON.stringify(this.searchVariables));
+    delete autoCompleteVariables.searchInput.filters;
+    delete autoCompleteVariables.searchInput.useVactor;
     // call the function which makes graphQL request
     if (val.length > 1) {
       return this.apollo.watchQuery({
         query: this.FIND_TRIALS,
-        variables: this.searchVariables
+        variables: autoCompleteVariables
       }).valueChanges.pipe(map(({data}) => {
         let retVal = (data as any);
         return retVal.autocomplete;
@@ -204,7 +253,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     let hlTitle = "";
     parts.map((part: any) => {
-      hlTitle += ('<span>' + 
+      hlTitle += ('<span>' +
         (part.highlight ? '<b>' : '') +
         part.text +
         (part.highlight ? '</b>' : '') +
@@ -219,7 +268,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (option?.highlights?.length > 0) {
       let texts = option.highlights[0].texts;
       texts.map((text: any) => {
-        hlTitle += ('<span>' + 
+        hlTitle += ('<span>' +
           (text.type === 'hit' ? '<b>' : '') +
           text.value +
           (text.type === 'hit' ? '</b>' : '') +
@@ -227,7 +276,7 @@ export class AppComponent implements OnInit, OnDestroy {
         );
       });
     }*/
-    
+
     //console.log(hlTitle);
     return hlTitle;
   }

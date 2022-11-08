@@ -3,23 +3,26 @@
   "facets" custom field name. The return value of this function is
   used to populate the resolver generated from your Payload Type.
 */
-
 exports = async (facetInput) => {
   console.log("trialsFacetsCustomResolver");
-  
+
   const cluster = context.services.get("mongodb-atlas");
   const db = cluster.db("ClinicalTrials");
   const trialsCol = db.collection("trials");
-  
+  const endpoint = "https://scalethebrain.com/rest_vector"; // vectoring encoder hosted by engineering/PM. Contact @marcus.eagan for any issues.
+
   const query = facetInput.term || "";
   const filters = facetInput.filters ? facetInput.filters : [];
   const queryString = facetInput.filters ? filtersToQueryString(filters) : "";
+  const useVector = facetInput.useVector;
+  const k = facetInput.k || 1000;
   //console.log(`Search term: ${JSON.stringify(query)}`);
   //console.log(`Query string: '${queryString}'`);
-  
+  //console.log(`Use vector: '${useVector}'`);
+
   const rangeQuery = filtersToRangeQuery(filters);
   //console.log(`Range: ${JSON.stringify(rangeQuery)}`);
-  
+
   let countAllFacets = {
     "$searchMeta": {
       "index": "default",
@@ -31,7 +34,7 @@ exports = async (facetInput) => {
       }
     }
   };
-  
+
   let countFacetsWithFilters = {
     "$searchMeta": {
       "compound": {
@@ -47,7 +50,7 @@ exports = async (facetInput) => {
       }
     }
   };
-  
+
   let basicFacetsNoTerm = {
     "$searchMeta": {
       "index": "default",
@@ -126,11 +129,11 @@ exports = async (facetInput) => {
       }
     }
   };
-  
+
   let compoundOperator = {
     "compound": {}
   };
-  
+
   if (queryString && queryString.length > 0) {
     compoundOperator.compound.filter = [{
       "queryString": {
@@ -139,6 +142,7 @@ exports = async (facetInput) => {
       }
     }];
   }
+
   if (query && query.length > 0) {
     compoundOperator.compound.must = [{
       "text": {
@@ -152,7 +156,7 @@ exports = async (facetInput) => {
       }
     }];
   }
-  
+
   if (rangeQuery) {
     if (compoundOperator.compound.filter && compoundOperator.compound.filter.length > 0) {
       compoundOperator.compound.filter.push(rangeQuery);
@@ -160,111 +164,146 @@ exports = async (facetInput) => {
       compoundOperator.compound.filter = [rangeQuery];
     }
   }
-          
+
+  let facetsObject = {
+      "conditions": {
+          "type": "string",
+          "path": "condition",
+          "numBuckets": 10
+      },
+      "intervention_types": {
+          "type": "string",
+          "path": "intervention",
+          "numBuckets": 10
+      },
+      "interventions": {
+          "type": "string",
+          "path": "intervention_mesh_term",
+          "numBuckets": 10
+      },
+      "genders": {
+          "type": "string",
+          "path": "gender",
+          "numBuckets": 10
+      },
+      "sponsors": {
+          "type": "string",
+          "path": "sponsors.agency",
+          "numBuckets": 10
+      },
+      "start_date": {
+          "type": "date",
+          "path": "start_date",
+          "boundaries": [
+              new Date("2011-01-01"),
+              new Date("2012-01-01"),
+              new Date("2013-01-01"),
+              new Date("2014-01-01"),
+              new Date("2015-01-01"),
+              new Date("2016-01-01"),
+              new Date("2017-01-01"),
+              new Date("2018-01-01"),
+              new Date("2019-01-01"),
+              new Date("2020-01-01"),
+              new Date("2021-01-01"),
+              new Date("2022-01-01")
+          ],
+          "default": "other"
+      }
+  };
+
   let searchFacetsWithFilters = {
     "$searchMeta": {
       "index": "default",
       "facet": {
         "operator": compoundOperator,
-        "facets": {
-          /*
-            "completion_date": {
-                "type": "date",
-                "path": "completion_date",
-                "boundaries": [
-                    new Date("2011-01-01"),
-                    new Date("2012-01-01"),
-                    new Date("2013-01-01"),
-                    new Date("2014-01-01"),
-                    new Date("2015-01-01"),
-                    new Date("2016-01-01"),
-                    new Date("2017-01-01"),
-                    new Date("2018-01-01"),
-                    new Date("2019-01-01"),
-                    new Date("2020-01-01"),
-                    new Date("2021-01-01"),
-                    new Date("2022-01-01")
-                ],
-                "default": "other"
-            },*/
-            "conditions": {
-                "type": "string",
-                "path": "condition",
-                "numBuckets": 10
-            },
-            "intervention_types": {
-                "type": "string",
-                "path": "intervention",
-                "numBuckets": 10
-            },
-            "interventions": {
-                "type": "string",
-                "path": "intervention_mesh_term",
-                "numBuckets": 10
-            },
-            "genders": {
-                "type": "string",
-                "path": "gender",
-                "numBuckets": 10
-            },
-            "sponsors": {
-                "type": "string",
-                "path": "sponsors.agency",
-                "numBuckets": 10
-            },
-            "start_date": {
-                "type": "date",
-                "path": "start_date",
-                "boundaries": [
-                    new Date("2011-01-01"),
-                    new Date("2012-01-01"),
-                    new Date("2013-01-01"),
-                    new Date("2014-01-01"),
-                    new Date("2015-01-01"),
-                    new Date("2016-01-01"),
-                    new Date("2017-01-01"),
-                    new Date("2018-01-01"),
-                    new Date("2019-01-01"),
-                    new Date("2020-01-01"),
-                    new Date("2021-01-01"),
-                    new Date("2022-01-01")
-                ],
-                "default": "other"
-            }
-        }
+        "facets": facetsObject
       }
     }
   };
-  
+
+  let vector = [];
+  if (useVector) {
+    // encode the query
+    const response = await context.http.post({
+      url: endpoint,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      body: { field_to_vectorize: query },
+      encodeBodyAsJSON: true
+    }).then(response => {
+      // The response body is encoded as raw BSON.Binary. Parse it to JSON.
+      const responseBody = EJSON.parse(response.body?.text());
+      if (responseBody) {
+        vector = responseBody.vector;
+        //let httpStatus = (response.status !== undefined) ? parseInt(response.status) : undefined;
+        //console.log(`${httpStatus}: vector: ${vector.slice(0, 4)}`);
+        return responseBody;
+      }
+    });
+  }
+
+  console.log("processing query...");
+
+  let vectorFacet = {
+    "$searchMeta": {
+      "index": "vector",
+      "facet": {
+        "operator": {
+          'knnBeta': {
+            'vector': vector,
+            'path': 'detailed_description_vector',
+            'k': k
+          }
+        },
+        "facets": facetsObject
+      }
+    }
+  };
+
   let addFields = {
     '$addFields': {
       count: "$$SEARCH_META.count"
     }
   };
-  
+
   let pipeline = [];
-  
+
   if (facetInput.countOnly) {
+    console.log("count only");
     if (queryString && queryString.trim().length > 0) {
       // filters provided
+      console.log("count only: filters provided");
       pipeline.push(countFacetsWithFilters);
     } else {
       // no filters provided
+      console.log("count only: no filters provided");
       pipeline.push(countAllFacets);
     }
   } else if (query && query.length > 0) {
+    console.log("not count only");
     // search term provided
-    pipeline.push(searchFacetsWithFilters);
+    if (useVector) {
+      console.log("not count only: use vector facets");
+      pipeline.push(vectorFacet); // TODO: add filters support
+    } else {
+      console.log("not count only: use search facets");
+      pipeline.push(searchFacetsWithFilters);
+    }
   } else if (queryString && queryString.trim().length > 0) {
+      console.log("not count only *");
       // filters provided
       pipeline.push(searchFacetsWithFilters);
   } else {
+      console.log("not count only basic");
     // no search term or filters provided
     pipeline.push(basicFacetsNoTerm);
   }
-  
-  pipeline.push(addFields);
-  //console.log(`Pipeline ${JSON.stringify(pipeline)}`);
+
+  // commented out for possible bug w/ 6.0??? $$SEARCH_META not accessible when using $searchMeta stage, just $search??
+  // pipeline.push(addFields);
+  console.log(`Pipeline ${JSON.stringify(pipeline)}`);
 
   const facets = await trialsCol.aggregate(pipeline).toArray();
 
@@ -301,7 +340,7 @@ exports = async (facetInput) => {
     let sdates = buckets.map(function(bucket) {
       return {name: bucket._id, count: bucket.count};
     });
-  
+
     facets[0].conditions = conditions;
     facets[0].intervention_types = intervention_types;
     facets[0].interventions = interventions;
@@ -310,7 +349,7 @@ exports = async (facetInput) => {
     //facets[0].completion_date = cdates;
     facets[0].start_date = sdates;
   }
-  
+
   return facets;
 };
 
@@ -340,7 +379,7 @@ const filtersToRangeQuery = (filters) => {
     startDate = new Date(p1);
     endDate = new Date(startDate.getTime());
     endDate.setDate(endDate.getDate() + 365);
-    
+
     let rangeQuery = {
       range: {
         path: "start_date",
@@ -348,7 +387,7 @@ const filtersToRangeQuery = (filters) => {
         lt: endDate
       }
     };
-  
+
     return rangeQuery;
   } else {
     return null;

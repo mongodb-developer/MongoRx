@@ -42,8 +42,11 @@
   background: #00684b !important;
 }
 
-.mat-flat-button.mat-primary, .mat-raised-button.mat-primary, .mat-fab.mat-primary, .mat-mini-fab.mat-primary {
+.mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-thumb, .mat-flat-button.mat-primary, .mat-raised-button.mat-primary, .mat-fab.mat-primary, .mat-mini-fab.mat-primary {
   background-color: rgb(17, 97, 73) !important;
+}
+.mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-bar {
+  background-color: #d9ead3ff !important;
 }
 
 .mat-form-field.mat-focused .mat-form-field-label {

@@ -21,6 +21,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   facetsLoading: boolean = false;
   trials: any;
   facets: any;
+  useVectorSearch: boolean = false;
   filter$: Observable<string | string[] | null>;
   private trialQuerySubscription: Subscription | undefined;
   private facetQuerySubscription: Subscription | undefined;
@@ -62,7 +63,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
     sponsors { agency }
     status
     phase
-    highlights { 
+    highlights {
       texts { type value }
     }
     score
@@ -87,7 +88,9 @@ export class TrialListComponent implements OnInit, OnDestroy {
     "facetInput": {
       "term": "",   // e.g., "cancer"
       "countOnly": false,
-      "filters": [] as string[] // e.g., ["condition=Neoplasms","intervention=procedure"]
+      "filters": [] as string[], // e.g., ["condition=Neoplasms","intervention=procedure"]
+      "useVector": false,
+      "k": "1000"
     }
   };
 
@@ -97,7 +100,9 @@ export class TrialListComponent implements OnInit, OnDestroy {
       "limit": "12",
       "term": "",   // e.g., "arthritis"
       "filters": [] as string[],
-      "sort": ""
+      "sort": "",
+      "useVector": false,
+      "k": "1000"
     }
   };
 
@@ -210,10 +215,10 @@ export class TrialListComponent implements OnInit, OnDestroy {
       filtersToAddTo.push(filterToAdd);
       console.log(`Adding ${JSON.stringify(filterToAdd)} to url params`)
       this.router.navigate(
-        [], 
+        [],
         {
           relativeTo: this.activatedRoute,
-          queryParams: filterToAdd, 
+          queryParams: filterToAdd,
           queryParamsHandling: 'merge'
         });
       }
@@ -231,10 +236,10 @@ export class TrialListComponent implements OnInit, OnDestroy {
     console.log(`Key to remove: ${filterField}`);
     console.log(JSON.stringify({[filterField] : null}));
     this.router.navigate(
-      [], 
+      [],
       {
         relativeTo: this.activatedRoute,
-        queryParams: {[filterField] : null}, 
+        queryParams: {[filterField] : null},
         queryParamsHandling: 'merge'
       });
   }
@@ -249,10 +254,10 @@ export class TrialListComponent implements OnInit, OnDestroy {
     };
 
     this.router.navigate(
-      [], 
+      [],
       {
         relativeTo: this.activatedRoute,
-        queryParams: queryParams, 
+        queryParams: queryParams,
         //queryParamsHandling: 'merge', // 'merge' is default, remove to replace all query params by provided
       });
 
@@ -261,7 +266,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
 
   onClearAll(): void {
     this.removeSearchTermAndFilters();
-    
+
     // clear all filters
     this.conditionFilters = [];
     this.interventionFilters = [];
@@ -354,6 +359,11 @@ export class TrialListComponent implements OnInit, OnDestroy {
           this.onClearAll();
           return null;
         } else {
+          if (keys.indexOf("useVector") >= 0) {
+            this.useVectorSearch = params.get('useVector')?.toLowerCase() === 'true';
+            this.searchTermService.changeVector(this.useVectorSearch);
+            console.log(`useVectorSearch: ${this.useVectorSearch}`);
+          }
           // existing query params -- add new ones
           let qParam = "";
           if (keys.indexOf("q") >= 0) {
@@ -427,6 +437,8 @@ export class TrialListComponent implements OnInit, OnDestroy {
               this.addFilter({[key]: value}, this.statusFilters);
             } else if (key === "start_date") {
               this.addFilter({[key]: value}, this.startDateFilters);
+            } else if (key === "useVector") {
+              this.useVectorSearch = value?.toLowerCase() === 'true';
             }
           }
         }
@@ -442,6 +454,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   }
 
   getFacets(): void {
+    this.facetVariables.facetInput.useVector = this.useVectorSearch;
     this.facetQuerySubscription = this.apollo.watchQuery<any>({
       query: this.GET_FACETS,
       variables: this.facetVariables
@@ -457,7 +470,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
     //console.log(`doSearch::Current term: ${this.searchVariables.searchInput.term}`);
     this.trialsLoading = true;
     if (this.searchQuerySubscription) this.searchQuerySubscription.unsubscribe();
-
+    this.searchVariables.searchInput.useVector = this.useVectorSearch;
     this.searchQuerySubscription = this.apollo.watchQuery<any>({
       query: this.FIND_TRIALS,
       variables: this.searchVariables
