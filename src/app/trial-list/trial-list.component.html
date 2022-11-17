@@ -99,9 +99,9 @@
                       (selectionChange)="onSortOrderChange($event.value)"
                       disableOptionCentering panelClass="sortPanelClass">
             <mat-option value="relevance">Relevance</mat-option>
-            <mat-option value="sponsors.agency" #sponsorMatOption (click)="onSortClick($event, sponsorMatOption.value)">Sponsor</mat-option>
-            <mat-option value="start_date" #dateMatOption (click)="onSortClick($event, dateMatOption.value)">Start Date</mat-option>
-            <mat-option value="brief_title" #titleMatOption (click)="onSortClick($event, titleMatOption.value)">Title</mat-option>
+            <mat-option value="sponsors.agency" #sponsorMatOption (click)="onSortClick($event, sponsorMatOption.value)">Sponsor  {{searchVariables.searchInput.sortOrder === "asc" ? "↑" : (searchVariables.searchInput.sortOrder === "desc" ? "↓" : "")}}</mat-option>
+            <mat-option value="start_date" #dateMatOption (click)="onSortClick($event, dateMatOption.value)">Start Date {{searchVariables.searchInput.sortOrder === "asc" ? "↑" : (searchVariables.searchInput.sortOrder === "desc" ? "↓" : "")}}</mat-option>
+            <mat-option value="brief_title" #titleMatOption (click)="onSortClick($event, titleMatOption.value)">Title {{searchVariables.searchInput.sortOrder === "asc" ? "↑" : (searchVariables.searchInput.sortOrder === "desc" ? "↓" : "")}}</mat-option>
           </mat-select>
         </mat-form-field>
         <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('trials')">
@@ -118,9 +118,9 @@
           <mat-label>Sort by</mat-label>
           <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)"  disableOptionCentering panelClass="sortPanelClass">
             <mat-option value="relevance">Relevance</mat-option>
-            <mat-option value="sponsors.agency" #sponsorMatOption (click)="onSortClick($event, sponsorMatOption.value)">Sponsor</mat-option>
-            <mat-option value="start_date" #dateMatOption (click)="onSortClick($event, dateMatOption.value)">Start Date</mat-option>
-            <mat-option value="brief_title" #titleMatOption (click)="onSortClick($event, titleMatOption.value)">Title</mat-option>
+            <mat-option value="sponsors.agency" #sponsorMatOption (click)="onSortClick($event, sponsorMatOption.value)">Sponsor  {{searchVariables.searchInput.sortOrder === "asc" ? "↑" : (searchVariables.searchInput.sortOrder === "desc" ? "↓" : "")}}</mat-option>
+            <mat-option value="start_date" #dateMatOption (click)="onSortClick($event, dateMatOption.value)">Start Date {{searchVariables.searchInput.sortOrder === "asc" ? "↑" : (searchVariables.searchInput.sortOrder === "desc" ? "↓" : "")}}</mat-option>
+            <mat-option value="brief_title" #titleMatOption (click)="onSortClick($event, titleMatOption.value)">Title {{searchVariables.searchInput.sortOrder === "asc" ? "↑" : (searchVariables.searchInput.sortOrder === "desc" ? "↓" : "")}}</mat-option>
           </mat-select>
         </mat-form-field>
         <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('trials')">
