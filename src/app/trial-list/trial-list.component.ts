@@ -101,6 +101,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
       "term": "",   // e.g., "arthritis"
       "filters": [] as string[],
       "sort": "",
+      "sortOrder": "",
       "useVector": false,
       "k": "1000"
     }
@@ -123,8 +124,26 @@ export class TrialListComponent implements OnInit, OnDestroy {
   onSortOrderChange(value: any) {
     //console.log(value);
     this.searchVariables.searchInput.sort = value === "relevance" ? "" : value;
+    this.searchVariables.searchInput.sortOrder = "";
     this.searchVariables.searchInput.skip = "0";
     this.doSearch(false, "from onSortOrderChange");
+  }
+
+  onSortClick(event: any, value: any) {
+    console.log(`current: ${this.searchVariables.searchInput.sortOrder}`);
+    if (this.searchVariables.searchInput.sort === value) {
+      // TODO: reverse sort order
+      this.searchVariables.searchInput.sortOrder =
+        this.searchVariables.searchInput.sortOrder === "asc" ? "desc" : "asc";
+    } else {
+      // sort order changed -- why isn't onSortOrderChange firing?
+      this.searchVariables.searchInput.sortOrder = "";
+      console.log("Sort order changed");
+    }
+    console.log(`next: ${this.searchVariables.searchInput.sortOrder}`);
+    this.doSearch(false, "from onSortClick");
+    //event.preventDefault();
+    //return false;
   }
 
   trimTS(timestamp: string) : string {
@@ -296,6 +315,10 @@ export class TrialListComponent implements OnInit, OnDestroy {
 
   // utility function for formatting search results
   titleCase(str: string): string {
+    str = str.replace(/"/g, '').trim();
+    if (str.startsWith("-") || str.startsWith("•")) {
+      str = str.slice(1);
+    }
     const lowers = ["a", "and", "at", "by", "in", "for", "or", "of", "over", "the", "to"];
     return str.split(' ').map(function (word, index) {
       if (word === "A" && index === 0) {

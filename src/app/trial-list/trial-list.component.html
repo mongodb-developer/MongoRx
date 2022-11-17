@@ -95,9 +95,13 @@
       <div class="code-view-container" style="margin-left: auto">
         <mat-form-field appearance="standard" style="padding-right: 1em;">
           <mat-label>Sort by</mat-label>
-          <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)" disableOptionCentering panelClass="sortPanelClass">
+          <mat-select [(value)]="sortOrder"
+                      (selectionChange)="onSortOrderChange($event.value)"
+                      disableOptionCentering panelClass="sortPanelClass">
             <mat-option value="relevance">Relevance</mat-option>
-            <mat-option value="start_date">Start Date</mat-option>
+            <mat-option value="sponsors.agency" #sponsorMatOption (click)="onSortClick($event, sponsorMatOption.value)">Sponsor</mat-option>
+            <mat-option value="start_date" #dateMatOption (click)="onSortClick($event, dateMatOption.value)">Start Date</mat-option>
+            <mat-option value="brief_title" #titleMatOption (click)="onSortClick($event, titleMatOption.value)">Title</mat-option>
           </mat-select>
         </mat-form-field>
         <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('trials')">
@@ -114,7 +118,9 @@
           <mat-label>Sort by</mat-label>
           <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)"  disableOptionCentering panelClass="sortPanelClass">
             <mat-option value="relevance">Relevance</mat-option>
-            <mat-option value="start_date">Start Date</mat-option>
+            <mat-option value="sponsors.agency" #sponsorMatOption (click)="onSortClick($event, sponsorMatOption.value)">Sponsor</mat-option>
+            <mat-option value="start_date" #dateMatOption (click)="onSortClick($event, dateMatOption.value)">Start Date</mat-option>
+            <mat-option value="brief_title" #titleMatOption (click)="onSortClick($event, titleMatOption.value)">Title</mat-option>
           </mat-select>
         </mat-form-field>
         <button mat-mini-fab color="primary" aria-label="View facet code" (click)="openDialog('trials')">
@@ -245,12 +251,12 @@
           <div fxFlex="85" fxFlex.xs="15" fxFlexOrder="2">
             <div *ngIf="isArray(trial.condition)">
               <p style="display: inline; line-height: 2;" *ngFor="let condition of trial.condition">
-                <a class="facet-filter" (click)="onConditionFacetClicked(condition)">{{ condition }}</a>
+                <a class="facet-filter" (click)="onConditionFacetClicked(condition)">{{ titleCase(condition) }}</a>
                 <fa-icon [icon]="faStethoscope" class="icon condition"></fa-icon>
               </p>
             </div>
             <div *ngIf="!isArray(trial.condition)">
-              <p>{{ trial.condition }}
+              <p>{{ titleCase(trial.condition) }}
                 <fa-icon [icon]="faStethoscope" class="icon condition"></fa-icon>
               </p>
             </div>
