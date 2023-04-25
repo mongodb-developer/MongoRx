@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .concat(this.conditionFilters)
       .concat(this.sponsorFilters)
       .concat(this.productFilters); // TODO: add more
-    console.log(`All filters: ${JSON.stringify(allFilters)}`);
+    //console.log(`All filters: ${JSON.stringify(allFilters)}`);
     this.chartFilters = {};
     this.trialLinkFilters = {};
     allFilters.map((filter)=>{
@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       Object.assign(this.trialLinkFilters, filter);
     });
     this.facetFilters = Object.keys(this.chartFilters).map((key) => `${key}:${this.chartFilters[key]}`);
-    console.log(`Facet count filters: ${JSON.stringify(this.facetFilters)}`);
+    //console.log(`Facet count filters: ${JSON.stringify(this.facetFilters)}`);
     this.setFacetCount("", this.facetFilters);
   }
 
@@ -89,33 +89,73 @@ export class DashboardComponent implements OnInit, OnDestroy {
     let data: any = {};
     switch (which) {
       case "condition":
-        data.gqlQuery = `public conditionChart: any = this.sdk.createChart({
+        data.gqlQuery = `import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
+
+sdk: ChartsEmbedSDK = new ChartsEmbedSDK({
+  baseUrl: "https://charts.mongodb.com/charts-global_shared-jebkk"
+});
+
+public conditionChart: any = this.sdk.createChart({
   chartId: "49658e73-a963-4be0-a613-721d948793f6"
-});`;
+});
+
+this.conditionChart.render(document.getElementById("condition-chart"))`;
         break;
 
         case "sponsor":
-          data.gqlQuery = `public sponsorChart: any = this.sdk.createChart({
+          data.gqlQuery = `import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
+
+sdk: ChartsEmbedSDK = new ChartsEmbedSDK({
+  baseUrl: "https://charts.mongodb.com/charts-global_shared-jebkk"
+});
+
+public sponsorChart: any = this.sdk.createChart({
   chartId: "7ae29da0-2467-4180-a461-1faa0fa26527"
-});`;
+});
+
+this.sponsorChart.render(document.getElementById("sponsor-chart"));`;
           break;
 
         case "intervention":
-          data.gqlQuery = `public interventionChart: any = this.sdk.createChart({
+          data.gqlQuery = `import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
+
+sdk: ChartsEmbedSDK = new ChartsEmbedSDK({
+  baseUrl: "https://charts.mongodb.com/charts-global_shared-jebkk"
+});
+
+public interventionChart: any = this.sdk.createChart({
   chartId: "c5ede44c-ec97-44fe-86c3-463c30e9ec39"
-});`;
+});
+
+this.interventionChart.render(document.getElementById("intervention-chart"));`;
           break;
 
         case "status":
-          data.gqlQuery = `public statusChart: any = this.sdk.createChart({
+          data.gqlQuery = `import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
+
+sdk: ChartsEmbedSDK = new ChartsEmbedSDK({
+  baseUrl: "https://charts.mongodb.com/charts-global_shared-jebkk"
+});
+
+public statusChart: any = this.sdk.createChart({
   chartId: "16f4d4ff-bbac-4308-b48f-14d40fbdc490"
-});`;
+});
+
+this.statusChart.render(document.getElementById("status-chart"));`;
           break;
 
         case "drug":
-          data.gqlQuery = `public productChart: any = this.sdk.createChart({
+          data.gqlQuery = `import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
+
+sdk: ChartsEmbedSDK = new ChartsEmbedSDK({
+  baseUrl: "https://charts.mongodb.com/charts-global_shared-jebkk"
+});
+
+public productChart: any = this.sdk.createChart({
   chartId: "01f24b86-e9cb-41d6-bff7-dfe0fed0e1f7"
-});`;
+});
+
+this.productChart.render(document.getElementById("product-chart"));`;
           break;
 
       case "count":
@@ -127,8 +167,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         data.gqlVarsTitle = "Query Variables";
         break;
     }
-    
-    console.log(`DATA:\n${JSON.stringify(data, null, 2)}`);
+
+    //console.log(`DATA:\n${JSON.stringify(data, null, 2)}`);
     data.gqlQueryLang = data.gqlQueryLang || "javascript";
     data.gqlQueryTitle = data.gqlQueryTitle || "Atlas Charts Embedding SDK";
     data.gqlVars = data.gqlVars || "";
@@ -141,7 +181,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       data: data
     });
   }
-  
+
   // font-awesome icons
   faStethoscope = faStethoscope;
   faPlus = faPlus;
@@ -232,7 +272,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   statusFilters: any[] = [];
   sponsorFilters: any[] = [];
   productFilters: any[] = [];
-  
+
   selectable = true;
   removable = true;
   toggle = true;
