@@ -55,11 +55,12 @@ exports = async (facetInput) => {
     "$searchMeta": {
       "index": "default",
       "facet": {
+        /*
         "operator": {
           "exists": {
             "path": "nct_id"
           }
-        },
+        },*/
         "facets": {
             "completion_date": {
                 "type": "date",
