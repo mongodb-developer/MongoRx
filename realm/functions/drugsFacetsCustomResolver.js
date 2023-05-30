@@ -49,11 +49,12 @@ exports = async (facetInput) => {
     "$searchMeta": {
       "index": "drugs",
       "facet": {
+        /*
         "operator": {
           "exists": {
             "path": "id"
           }
-        },
+        },*/
         "facets": {
           "manufacturers": {
               "type": "string",
