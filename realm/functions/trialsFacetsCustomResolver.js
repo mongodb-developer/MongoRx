@@ -66,7 +66,6 @@ exports = async (facetInput) => {
                 "type": "date",
                 "path": "completion_date",
                 "boundaries": [
-                    new Date("2011-01-01"),
                     new Date("2012-01-01"),
                     new Date("2013-01-01"),
                     new Date("2014-01-01"),
@@ -77,7 +76,9 @@ exports = async (facetInput) => {
                     new Date("2019-01-01"),
                     new Date("2020-01-01"),
                     new Date("2021-01-01"),
-                    new Date("2022-01-01")
+                    new Date("2022-01-01"),
+                    new Date("2023-01-01"),
+                    new Date("2024-01-01")
                 ],
                 "default": "other"
             },
@@ -110,7 +111,6 @@ exports = async (facetInput) => {
                 "type": "date",
                 "path": "start_date",
                 "boundaries": [
-                    new Date("2011-01-01"),
                     new Date("2012-01-01"),
                     new Date("2013-01-01"),
                     new Date("2014-01-01"),
@@ -123,6 +123,7 @@ exports = async (facetInput) => {
                     new Date("2021-01-01"),
                     new Date("2022-01-01"),
                     new Date("2023-01-01"),
+                    new Date("2024-01-01"),
                 ],
                 "default": "other"
             }
