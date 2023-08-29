@@ -57,3 +57,4 @@ passwords.txt
 bfg-1.14.0.jar
 src/trialed_alongside_facet.js
 deploy/env.config.mside
+.vscode/settings.json

@@ -1,3 +1,7 @@
+/**
+ * Data source: https://classic.clinicaltrials.gov/AllPublicXML.zip
+ * Extract the archive to a local file system
+ */
 const fs          = require('graceful-fs');
 const path        = require('path');
 const parseString = require('xml2js').parseString;

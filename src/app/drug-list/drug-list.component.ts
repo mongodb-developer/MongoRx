@@ -63,7 +63,7 @@ export class DrugListComponent implements OnInit, OnDestroy {
   }];
   sortOrder = "relevance";
   onSortOrderChange(value: any) {
-    console.log(value);
+    //console.log(value);
     if (value === "brand_name") {
 
     }
@@ -144,7 +144,7 @@ export class DrugListComponent implements OnInit, OnDestroy {
     let allFilters = this.manufacturerFilters
       //.concat(this.interventionFilters)
       ; // TODO: add more?
-    console.log(`All filters: ${JSON.stringify(allFilters)}`);
+    //console.log(`All filters: ${JSON.stringify(allFilters)}`);
     let queryStringFilters = new Set<string>();
     allFilters.map((filter) => {
       Object.keys(filter).map((key) => {
@@ -180,12 +180,12 @@ export class DrugListComponent implements OnInit, OnDestroy {
     });
     if (index === -1) {
       filtersToAddTo.push(filterToAdd);
-      console.log(`Adding ${JSON.stringify(filterToAdd)} to url params`)
+      //console.log(`Adding ${JSON.stringify(filterToAdd)} to url params`)
       this.router.navigate(
-        [], 
+        [],
         {
           relativeTo: this.activatedRoute,
-          queryParams: filterToAdd, 
+          queryParams: filterToAdd,
           queryParamsHandling: 'merge'
         });
       }
@@ -200,13 +200,13 @@ export class DrugListComponent implements OnInit, OnDestroy {
     this.onFiltersChanged(filtersToRemoveFrom);
 
     let filterField = this.objectKeys(filterToRemove)[0];
-    console.log(`Key to remove: ${filterField}`);
-    console.log(JSON.stringify({[filterField] : null}));
+    //console.log(`Key to remove: ${filterField}`);
+    //console.log(JSON.stringify({[filterField] : null}));
     this.router.navigate(
-      [], 
+      [],
       {
         relativeTo: this.activatedRoute,
-        queryParams: {[filterField] : null}, 
+        queryParams: {[filterField] : null},
         queryParamsHandling: 'merge'
       });
   }
@@ -219,7 +219,7 @@ export class DrugListComponent implements OnInit, OnDestroy {
     };
 
     this.router.navigate(
-      [], 
+      [],
       {
         relativeTo: this.activatedRoute,
         queryParams: queryParams,
@@ -242,10 +242,10 @@ export class DrugListComponent implements OnInit, OnDestroy {
     };
 
     this.router.navigate(
-      [], 
+      [],
       {
         relativeTo: this.activatedRoute,
-        queryParams: queryParams, 
+        queryParams: queryParams,
         //queryParamsHandling: 'merge', // 'merge' is default, remove to replace all query params by provided
       });
 
@@ -254,7 +254,7 @@ export class DrugListComponent implements OnInit, OnDestroy {
 
   onClearAll(): void {
     this.removeSearchTermAndFilters();
-    
+
     // clear all filters
     this.manufacturerFilters = [];
 
@@ -318,7 +318,7 @@ export class DrugListComponent implements OnInit, OnDestroy {
     }
     return str;
   }
-  
+
   constructor(
     private apollo: Apollo,
     private _cdr: ChangeDetectorRef,
@@ -401,13 +401,13 @@ export class DrugListComponent implements OnInit, OnDestroy {
             let kv = param.split("=");
             let key = kv[0];
             let value = kv[1];
-            console.log(`key: ${key}`);
+            //console.log(`key: ${key}`);
             if (key === "q" && value.trim().length > 0 && value.trim() !== "null") {
               if (this.searchVariables.drugSearchInput.term != value) {
                 this.searchVariables.drugSearchInput.term = value || '';
                 this.facetVariables.drugFacetInput.term = value || '';
               } else {
-                console.log("ngOnInit param unchanged")
+                //console.log("ngOnInit param unchanged")
               }
             } else if (key === "openfda.manufacturer_name") {
               this.addFilter({[key]: value}, this.manufacturerFilters);

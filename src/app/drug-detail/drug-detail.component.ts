@@ -259,7 +259,7 @@ export class DrugDetailComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.drugId = params.get('id');
-      console.log(`Updated ID to ${this.drugId}`);
+      //console.log(`Updated ID to ${this.drugId}`);
       this.drugQueryVariables.drugQueryInput.id = this.drugId;
       this.drugQuerySubscription = this.apollo.watchQuery<any>({
         query: this.GET_DRUG,
@@ -267,20 +267,22 @@ export class DrugDetailComponent implements OnInit {
       })
         .valueChanges
         .subscribe(({ data, loading }) => {
-          this.drug = data.drug_datum;
-  
-          // get drugs trialed together
-          this.trialedDrugQueryVariables.drugTrialedWithFacetInput.term = this.drug.openfda.brand_name;
-          this.trialedDrugsQuerySubscription = this.apollo.watchQuery<any>({
-            query: this.GET_TRIALED_WITH_DRUGS,
-            variables: this.trialedDrugQueryVariables
-          })
-            .valueChanges
-            .subscribe(({ data, loading }) => {
-              console.log(`TWG:${data}`);
-              this.trialedWithDrugs = data.drugTrialedWithFacet[0].drugs;
-            });
-  
+          if (data) {
+            this.drug = data.drug_datum;
+    
+            // get drugs trialed together
+            this.trialedDrugQueryVariables.drugTrialedWithFacetInput.term = this.drug?.openfda.brand_name;
+            this.trialedDrugsQuerySubscription = this.apollo.watchQuery<any>({
+              query: this.GET_TRIALED_WITH_DRUGS,
+              variables: this.trialedDrugQueryVariables
+            })
+              .valueChanges
+              .subscribe(({ data, loading }) => {
+                //console.log(`TWG:${JSON.stringify(data, null, 2)}`);
+                this.trialedWithDrugs = data.drugTrialedWithFacet[0].drugs;
+              });
+          }
+          
           // get count of drugs by same manufacturer
           this.facetVariables.drugFacetInput.filters.push(`openfda.manufacturer_name:${this.drug.openfda.manufacturer_name}`);
           this.countDrugsQuerySubscription = this.apollo.watchQuery<any>({
