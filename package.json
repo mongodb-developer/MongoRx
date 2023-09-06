@@ -34,6 +34,7 @@
     "apollo-angular": "^2.6.0",
     "autosuggest-highlight": "^3.1.1",
     "graphql": "^15.0.0",
+    "jslint": "^0.12.1",
     "lodash-es": "^4.17.21",
     "ngx-order-pipe": "^2.1.1",
     "rxjs": "~6.6.0",
