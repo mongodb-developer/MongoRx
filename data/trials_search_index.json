@@ -1,33 +1,39 @@
 {
-  "collectionName": "trials",
-  "database": "ClinicalTrials",
   "mappings": {
     "dynamic": false,
     "fields": {
       "brief_summary": {
         "type": "string"
       },
-      "brief_title": [{
+      "brief_title": [
+        {
           "type": "string"
         },
         {
-          "type": "sortableStringBetaV1"
+          "type": "token"
         },
         {
           "type": "autocomplete"
         }
       ],
-      "completion_date": [{
-        "type": "date"
-      }],
-      "condition": [{
+      "completion_date": [
+        {
+          "type": "date"
+        },
+        {
+          "type": "dateFacet"
+        }
+      ],
+      "condition": [
+        {
           "type": "string"
         },
         {
           "type": "stringFacet"
         }
       ],
-      "condition_mesh_term": [{
+      "condition_mesh_term": [
+        {
           "type": "string"
         },
         {
@@ -37,21 +43,24 @@
       "detailed_description": {
         "type": "string"
       },
-      "gender": [{
+      "gender": [
+        {
           "type": "string"
         },
         {
           "type": "stringFacet"
         }
       ],
-      "intervention": [{
+      "intervention": [
+        {
           "type": "string"
         },
         {
           "type": "stringFacet"
         }
       ],
-      "intervention_mesh_term": [{
+      "intervention_mesh_term": [
+        {
           "type": "string"
         },
         {
@@ -64,14 +73,16 @@
       "minimum_age": {
         "type": "number"
       },
-      "nct_id": [{
+      "nct_id": [
+        {
           "type": "string"
         },
         {
           "type": "autocomplete"
         }
       ],
-      "official_title": [{
+      "official_title": [
+        {
           "type": "string"
         },
         {
@@ -80,12 +91,13 @@
       ],
       "sponsors": {
         "fields": {
-          "agency": [{
+          "agency": [
+            {
               "analyzer": "keywordLowerAnalyzer",
               "type": "string"
             },
             {
-              "type": "sortableStringBetaV1"
+              "type": "token"
             },
             {
               "type": "stringFacet"
@@ -94,17 +106,16 @@
         },
         "type": "document"
       },
-      "start_date": [{
-          "type": "date"
-        },
+      "start_date": [
         {
-          "type": "sortableDateBetaV1"
+          "type": "date"
         },
         {
           "type": "dateFacet"
         }
       ],
-      "status": [{
+      "status": [
+        {
           "analyzer": "keywordLowerAnalyzer",
           "type": "string"
         },
@@ -114,15 +125,19 @@
       ]
     }
   },
-  "analyzers": [{
-    "charFilters": [],
-    "name": "keywordLowerAnalyzer",
-    "tokenFilters": [{
-      "type": "lowercase"
-    }],
-    "tokenizer": {
-      "type": "keyword"
+  "analyzers": [
+    {
+      "charFilters": [],
+      "name": "keywordLowerAnalyzer",
+      "tokenFilters": [
+        {
+          "type": "lowercase"
+        }
+      ],
+      "tokenizer": {
+        "type": "keyword"
+      }
     }
-  }],
+  ],
   "synonyms": []
 }

@@ -1,0 +1,99 @@
+{
+    "mappings": {
+      "dynamic": false,
+      "fields": {
+        "brief_summary_vector": {
+          "dimensions": 512,
+          "similarity": "euclidean",
+          "type": "knnVector"
+        },
+        "condition": [
+          {
+            "store": false,
+            "type": "string"
+          },
+          {
+            "type": "stringFacet"
+          }
+        ],
+        "condition_mesh_term": [
+          {
+            "store": false,
+            "type": "string"
+          },
+          {
+            "type": "stringFacet"
+          }
+        ],
+        "detailed_description_vector": {
+          "dimensions": 512,
+          "similarity": "euclidean",
+          "type": "knnVector"
+        },
+        "gender": [
+          {
+            "store": false,
+            "type": "string"
+          },
+          {
+            "type": "stringFacet"
+          }
+        ],
+        "intervention": [
+          {
+            "store": false,
+            "type": "string"
+          },
+          {
+            "type": "stringFacet"
+          }
+        ],
+        "intervention_mesh_term": [
+          {
+            "store": false,
+            "type": "string"
+          },
+          {
+            "type": "stringFacet"
+          }
+        ],
+        "sponsors": {
+          "fields": {
+            "agency": [
+              {
+                "analyzer": "keywordLowerAnalyzer",
+                "store": false,
+                "type": "string"
+              },
+              {
+                "type": "stringFacet"
+              }
+            ]
+          },
+          "type": "document"
+        },
+        "start_date": [
+          {
+            "type": "date"
+          },
+          {
+            "type": "dateFacet"
+          }
+        ]
+      }
+    },
+    "analyzers": [
+      {
+        "charFilters": [],
+        "name": "keywordLowerAnalyzer",
+        "tokenFilters": [
+          {
+            "type": "lowercase"
+          }
+        ],
+        "tokenizer": {
+          "type": "keyword"
+        }
+      }
+    ]
+  }
