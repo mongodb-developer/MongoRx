@@ -4,6 +4,7 @@ import { faFlask, faMedkit, faPlus, faStethoscope, faUserPlus } from '@fortaweso
 import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { noop as _noop } from 'lodash-es';
+import * as _ from 'lodash';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { SearchTermService } from "../services/search-term.service";
 import { Subscription, Observable } from 'rxjs';
@@ -21,6 +22,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   facetsLoading: boolean = false;
   trials: any;
   facets: any;
+  trialPaginationToken: string;
   useVectorSearch: boolean = false;
   filter$: Observable<string | string[] | null>;
   private trialQuerySubscription: Subscription | undefined;
@@ -44,7 +46,12 @@ export class TrialListComponent implements OnInit, OnDestroy {
 
   getData() {
     //console.log(`getting data`);
-    this.searchVariables.searchInput.skip = (Number(this.searchVariables.searchInput.skip) + 12).toString();
+    this.trialPaginationToken = this.trials[this.trials.length -1].trialPaginationToken;
+    if (_.isNull(this.trialPaginationToken) || _.isEmpty(this.trialPaginationToken)) {
+      this.searchVariables.searchInput.skip = (Number(this.searchVariables.searchInput.skip) + 12).toString();
+    } else {
+      this.searchVariables.searchInput.paginationToken = this.trialPaginationToken;
+    }
     this.doSearch(true, "from getData");
   }
 
@@ -67,6 +74,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
       texts { type value }
     }
     score
+    trialPaginationToken
     count { total }
   }
 }`;
@@ -102,6 +110,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
       "filters": [] as string[],
       "sort": "",
       "sortOrder": "",
+      "paginationToken": "",
       "useVector": false,
       "k": "1000"
     }
