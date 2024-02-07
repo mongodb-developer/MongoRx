@@ -24,6 +24,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   facets: any;
   trialPaginationToken: string;
   useVectorSearch: boolean = false;
+  docsPerRequest: number = 100;
   filter$: Observable<string | string[] | null>;
   private trialQuerySubscription: Subscription | undefined;
   private facetQuerySubscription: Subscription | undefined;
@@ -48,7 +49,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
     //console.log(`getting data`);
     this.trialPaginationToken = this.trials[this.trials.length -1].trialPaginationToken;
     if (_.isNull(this.trialPaginationToken) || _.isEmpty(this.trialPaginationToken)) {
-      this.searchVariables.searchInput.skip = (Number(this.searchVariables.searchInput.skip) + 12).toString();
+      this.searchVariables.searchInput.skip = (Number(this.searchVariables.searchInput.skip) + this.docsPerRequest).toString();
     } else {
       this.searchVariables.searchInput.paginationToken = this.trialPaginationToken;
     }
@@ -105,7 +106,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   searchVariables = {
     "searchInput": {
       "skip": "0",
-      "limit": "12",
+      "limit": this.docsPerRequest.toString(),
       "term": "",   // e.g., "arthritis"
       "filters": [] as string[],
       "sort": "",
