@@ -1,6 +1,9 @@
 {
+    "on_type": "Query",
     "field_name": "drugSearch",
     "function_name": "drugSearchCustomResolver",
+    "input_type_format": "custom",
+    "payload_type_format": "generated-list",
     "input_type": {
         "properties": {
             "filters": {
@@ -25,8 +28,5 @@
         "title": "DrugSearchInput",
         "type": "object"
     },
-    "input_type_format": "custom",
-    "on_type": "Query",
-    "payload_type": "Drug_datum",
-    "payload_type_format": "generated-list"
+    "payload_type": "Drug_datum"
 }

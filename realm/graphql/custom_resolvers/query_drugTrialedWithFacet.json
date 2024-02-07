@@ -1,6 +1,9 @@
 {
+    "on_type": "Query",
     "field_name": "drugTrialedWithFacet",
     "function_name": "drugTrialedWithFacetCustomResolver",
+    "input_type_format": "custom",
+    "payload_type_format": "generated-list",
     "input_type": {
         "properties": {
             "countOnly": {
@@ -22,8 +25,5 @@
         "title": "DrugTrialedWithFacetInput",
         "type": "object"
     },
-    "input_type_format": "custom",
-    "on_type": "Query",
-    "payload_type": "Facet",
-    "payload_type_format": "generated-list"
+    "payload_type": "Facet"
 }

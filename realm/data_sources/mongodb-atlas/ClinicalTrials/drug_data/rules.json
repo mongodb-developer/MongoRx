@@ -1,14 +1,14 @@
 {
-    "collection": "drug_data",
     "database": "ClinicalTrials",
+    "collection": "drug_data",
     "roles": [
         {
             "name": "default",
             "apply_when": {},
-            "write": true,
             "insert": true,
             "delete": true,
             "search": true,
+            "write": true,
             "additional_fields": {}
         }
     ]

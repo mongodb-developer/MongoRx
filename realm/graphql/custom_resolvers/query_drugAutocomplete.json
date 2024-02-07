@@ -1,6 +1,9 @@
 {
+    "on_type": "Query",
     "field_name": "drugAutocomplete",
     "function_name": "drugAutoCompleteCustomResolver",
+    "input_type_format": "custom",
+    "payload_type_format": "generated-list",
     "input_type": {
         "properties": {
             "limit": {
@@ -16,8 +19,5 @@
         "title": "DrugAutoCompleteInput",
         "type": "object"
     },
-    "input_type_format": "custom",
-    "on_type": "Query",
-    "payload_type": "Drug_datum",
-    "payload_type_format": "generated-list"
+    "payload_type": "Drug_datum"
 }

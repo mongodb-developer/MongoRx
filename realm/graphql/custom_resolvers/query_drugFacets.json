@@ -1,6 +1,9 @@
 {
+    "on_type": "Query",
     "field_name": "drugFacets",
     "function_name": "drugsFacetsCustomResolver",
+    "input_type_format": "custom",
+    "payload_type_format": "generated-list",
     "input_type": {
         "properties": {
             "countOnly": {
@@ -19,8 +22,5 @@
         "title": "DrugFacetInput",
         "type": "object"
     },
-    "input_type_format": "custom",
-    "on_type": "Query",
-    "payload_type": "Facet",
-    "payload_type_format": "generated-list"
+    "payload_type": "Facet"
 }

@@ -5,7 +5,7 @@
 */
 exports = async (facetInput) => {
   console.log("trialsFacetsCustomResolver");
-
+  
   const cluster = context.services.get("mongodb-atlas");
   const db = cluster.db("ClinicalTrials");
   const trialsCol = db.collection("trials");
@@ -78,7 +78,7 @@ exports = async (facetInput) => {
                     new Date("2021-01-01"),
                     new Date("2022-01-01"),
                     new Date("2023-01-01"),
-                    new Date("2024-01-01")
+                    new Date("2024-01-01"),
                 ],
                 "default": "other"
             },
@@ -254,7 +254,7 @@ exports = async (facetInput) => {
       "facet": {
         "operator": {
           'knnBeta': {
-            'vector': vector,
+            'vector': vector, 
             'path': 'detailed_description_vector',
             'k': k
           }
@@ -271,7 +271,7 @@ exports = async (facetInput) => {
   };
 
   let pipeline = [];
-
+  
   if (facetInput.countOnly) {
     console.log("count only");
     if (queryString && queryString.trim().length > 0) {
@@ -302,7 +302,7 @@ exports = async (facetInput) => {
     // no search term or filters provided
     pipeline.push(basicFacetsNoTerm);
   }
-
+  
   // commented out for possible bug w/ 6.0??? $$SEARCH_META not accessible when using $searchMeta stage, just $search??
   // pipeline.push(addFields);
   console.log(`Pipeline ${JSON.stringify(pipeline)}`);
@@ -342,7 +342,7 @@ exports = async (facetInput) => {
     let sdates = buckets.map(function(bucket) {
       return {name: bucket._id, count: bucket.count};
     });
-
+  
     facets[0].conditions = conditions;
     facets[0].intervention_types = intervention_types;
     facets[0].interventions = interventions;
@@ -351,7 +351,7 @@ exports = async (facetInput) => {
     //facets[0].completion_date = cdates;
     facets[0].start_date = sdates;
   }
-
+  
   return facets;
 };
 
@@ -381,7 +381,7 @@ const filtersToRangeQuery = (filters) => {
     startDate = new Date(p1);
     endDate = new Date(startDate.getTime());
     endDate.setDate(endDate.getDate() + 365);
-
+    
     let rangeQuery = {
       range: {
         path: "start_date",
@@ -389,7 +389,7 @@ const filtersToRangeQuery = (filters) => {
         lt: endDate
       }
     };
-
+  
     return rangeQuery;
   } else {
     return null;

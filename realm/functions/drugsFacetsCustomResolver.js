@@ -145,9 +145,10 @@ exports = async (facetInput) => {
     // no search term or filters provided
     pipeline.push(basicFacetsNoTerm);
   }
-  //console.log(`Pipeline ${JSON.stringify(pipeline)}`);
+  console.log(`Pipeline ${JSON.stringify(pipeline)}`);
   
-  pipeline.push(addFields);
+  //pipeline.push(addFields);
+  //console.log(`Pipeline ${JSON.stringify(pipeline)}`);
 
   const facets = await drugsCol.aggregate(pipeline).toArray();
 
