@@ -2,7 +2,7 @@
 
 ## What it is
 
-This application demonstrates how MongoDB Atlas, Atlas Search, Atlas Charts and Realm, combined with cloud ecosystem services like Google Maps and Google Geocoding can be used to build a data discovery and exploration application.
+This application demonstrates how MongoDB Atlas, Atlas Search, Atlas Vector Search, Atlas Charts and Realm, combined with cloud ecosystem services like Google Maps and Google Geocoding can be used to build a data discovery and exploration application.
 
 The application visualizes two datasets -- one from [ClinicalTrials.gov](https://clinicaltrials.gov/) and another from [OpenFDA](https://open.fda.gov) -- to create a unique information discovery experience that was not possible using the existing search UI offered by these respective websites.
 
