@@ -1,10 +1,10 @@
 {
-  "name": "mongodb-atlas",
-  "type": "mongodb-atlas",
-  "config": {
-    "clusterName": "demo",
-    "readPreference": "primary",
-    "wireProtocolEnabled": false
-  },
-  "version": 1
+    "name": "mongodb-atlas",
+    "type": "mongodb-atlas",
+    "config": {
+        "clusterName": "demo",
+        "readPreference": "secondaryPreferred",
+        "wireProtocolEnabled": false
+    },
+    "version": 1
 }
