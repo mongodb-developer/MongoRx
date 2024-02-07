@@ -38,8 +38,7 @@ exports = async (searchInput) => {
       },
       count: {
         "type": "total"
-      }
-    }
+      }    }
   };
   
   let basicSearch = {
@@ -53,7 +52,7 @@ exports = async (searchInput) => {
               'openfda.brand_name', 'openfda.generic_name', 'openfda.manufacturer_name'
             ],
             fuzzy: {
-              maxEdits: 1,
+              maxEdits: 2,
               maxExpansions: 100
             }
           }
@@ -66,6 +65,9 @@ exports = async (searchInput) => {
         path: [
           'openfda.brand_name', 'openfda.generic_name', 'openfda.manufacturer_name'
         ]
+      },
+      "tracking": {
+        "searchTerms": query
       }
     }
   };
@@ -81,7 +83,7 @@ exports = async (searchInput) => {
               'openfda.brand_name', 'openfda.generic_name', 'openfda.manufacturer_name'
             ],
             fuzzy: {
-              maxEdits: 1,
+              maxEdits: 2,
               maxExpansions: 100
             }
           }
@@ -100,6 +102,9 @@ exports = async (searchInput) => {
         path: [
           'openfda.brand_name', 'openfda.generic_name', 'openfda.manufacturer_name'
         ]
+      },
+      "tracking": {
+        "searchTerms": query
       }
     }
   };
@@ -117,6 +122,9 @@ exports = async (searchInput) => {
       },
       count: {
         "type": "total"
+      },
+      "tracking": {
+        "searchTerms": queryString
       }
     }
   };
