@@ -13,10 +13,13 @@ exports = async (searchInput) => {
   const endpoint = "https://scalethebrain.com/rest_vector"; // vectoring encoder hosted by engineering/PM. Contact @marcus.eagan for any issues.
 
   const query = searchInput.term || "";  // TODO: change to no-op filter if no term
-  const limit = searchInput.limit || 12;
+  const limit = searchInput.limit || 100;
   const skip = searchInput.skip || 0;
   const sort = searchInput.sort || "";
+  const sortOrder = searchInput.sortOrder || "asc";
   const useVector = searchInput.useVector;
+  const paginationToken = searchInput.paginationToken;
+  const k = searchInput.k || 100;
   const filters = searchInput.filters || [];
   const rangeQuery = filtersToRangeQuery(filters);
   //console.log(`Range: ${JSON.stringify(rangeQuery)}`);
@@ -29,7 +32,7 @@ exports = async (searchInput) => {
   const defaultFilterField = searchInput.filters && searchInput.filters.length > 0 ? searchInput.filters[0].split(":")[0] : "";
   //console.log(`Default filter: '${defaultFilterField}'`);
   const queryString = filtersToQueryString(filters);
-  console.log(`Query string: '${queryString}'`);
+  //console.log(`Query string: '${queryString}'`);
 
   let basicSearchNoTerm = {
     '$search': {
@@ -66,7 +69,7 @@ exports = async (searchInput) => {
               'detailed_description'
             ],
             fuzzy: {
-              maxEdits: 1,
+              maxEdits: 2,
               maxExpansions: 100
             }
           }
@@ -80,6 +83,9 @@ exports = async (searchInput) => {
           'brief_summary',
           'detailed_description'
         ]
+      },
+      "tracking": {
+        "searchTerms": query
       }
     }
   };
@@ -98,7 +104,7 @@ exports = async (searchInput) => {
               'detailed_description'
             ],
             fuzzy: {
-              maxEdits: 1,
+              maxEdits: 2,
               maxExpansions: 100
             }
           }
@@ -120,6 +126,9 @@ exports = async (searchInput) => {
           'official_title',
           'detailed_description'
         ]
+      },
+      "tracking": {
+        "searchTerms": query
       }
     }
   };
@@ -137,6 +146,9 @@ exports = async (searchInput) => {
       },
       count: {
         "type": "total"
+      },
+      "tracking": {
+        "searchTerms": queryString
       }
     }
   };
@@ -165,11 +177,14 @@ exports = async (searchInput) => {
 
   let vectorSearch = {
     '$search': {
-      'index': 'vector',
+      'index': 'vector', 
       'knnBeta': {
-        'vector': vector,
-        'path': 'detailed_description_vector',
-        'k': limit
+        'vector': vector, 
+        'path': 'detailed_description_vector', 
+        'k': k
+      },
+      "tracking": {
+        "searchTerms": query
       }
     }
   };
@@ -179,31 +194,35 @@ exports = async (searchInput) => {
   // The workaround is to use compound.filter for now
   let vectorSearchWithFilters = {
     '$search': {
-      'index': 'vector',
+      'index': 'vector', 
       compound: {
         must: [{
           'knnBeta': {
-            'vector': vector,
-            'path': 'detailed_description_vector',
-            'k': limit
+            'vector': vector, 
+            'path': 'detailed_description_vector', 
+            'k': k
           }
         }],
         filter: []
+      },
+      "tracking": {
+        "searchTerms": query
       }
     }
   };
 
   let vectorSearchProject = {
     '$project': {
-      'detailed_description_vector': 0,
+      'detailed_description_vector': 0, 
       'brief_summary_vector': 0
     }
   };
-
+  
   let addFields = {
     '$addFields': {
       score: {'$meta': 'searchScore'},
       highlights: {'$meta': 'searchHighlights'},
+      trialPaginationToken: {'$meta' : 'searchSequenceToken'},
       count: "$$SEARCH_META.count"
     }
   };
@@ -226,56 +245,61 @@ exports = async (searchInput) => {
         }
       });
       pipeline.push(vectorSearchWithFilters);
-      console.log(`using vectorSearchWithFilters: ${JSON.stringify(vectorSearchWithFilters.$search.compound.filter)}`);
+      //console.log(`using vectorSearchWithFilters: ${JSON.stringify(vectorSearchWithFilters.$search.compound.filter)}`);
     } else if (rangeQuery) {
       pipeline.push(vectorSearchWithFilters);
-      console.log(`using vectorSearchWithFilters: ${JSON.stringify(vectorSearchWithFilters.$search.compound.filter)}`);
+      //console.log(`using vectorSearchWithFilters: ${JSON.stringify(vectorSearchWithFilters.$search.compound.filter)}`);
     } else {
       pipeline.push(vectorSearch);
-      console.log("using vectorSearch");
+      //console.log("using vectorSearch");
     }
     pipeline.push(vectorSearchProject);
   } else if (query.length > 0) {
     if (queryString && queryString.trim().length > 0) {
       pipeline.push(searchWithFilters);
-      console.log("using searchWithFilters");
+      //console.log("using searchWithFilters");
     } else {
       pipeline.push(basicSearch);
-      console.log("using basicSearch");
+      //console.log("using basicSearch");
     }
   } else {
     if (queryString && queryString.trim().length > 0) {
       pipeline.push(searchNoTermWithFilters)
-      console.log("using searchNoTermWithFilters");
+      //console.log("using searchNoTermWithFilters");
     } else {
       pipeline.push(basicSearchNoTerm);
-      console.log("using basicSearchNoTerm");
+      //console.log("using basicSearchNoTerm");
     }
   }
   //console.log(`Pipeline ${JSON.stringify(pipeline)}`);
 
   // sorting
   // TODO: replace hard-code date for origin with aggregated max date
-  switch(sort) {
-    case "start_date":
-      let sortByDateDesc = {
-        "near": {
-          "path": "start_date",
-          "origin": new Date("2023-02-03T00:00:00.000+00:00"),
-          "pivot": 31556952000
-        }
-      };
-      pipeline[0]["$search"].compound.should = sortByDateDesc;
-      console.log(`pipeline[0]: ${JSON.stringify(pipeline[0]["$search"].compound.should)}`);
-      break;
-
-    case "relevance":
-    case "":
-      // do nothing
+  if (sort === "relevance") {
+    // do nothing
+  } else if (sort.length > 0) {
+    /*
+    let sortByDateDesc = {
+      "near": {
+        "path": "start_date",
+        "origin": new Date("2023-02-03T00:00:00.000+00:00"),
+        "pivot": 31556952000
+      }
+    };
+    pipeline[0]["$search"].compound.should = sortByDateDesc;
+    console.log(`pipeline[0]: ${JSON.stringify(pipeline[0]["$search"].compound.should)}`);
+    */
+    pipeline[0]["$search"].sort = {};
+    pipeline[0]["$search"].sort[sort] = sortOrder === "asc" ? 1 : -1;
+    //console.log(`pipeline[0]: ${JSON.stringify(pipeline[0]["$search"].sort)}`);
   }
 
   pipeline.push(addFields);
-  pipeline.push({'$skip': skip});
+  if (null != paginationToken && paginationToken.trim().length > 0) {
+    pipeline[0]["$search"].searchBefore = paginationToken;
+  } else {
+    pipeline.push({'$skip': skip});
+  }
   pipeline.push({'$limit': limit});
 
   const trials = await trialsCol.aggregate(pipeline).toArray();
