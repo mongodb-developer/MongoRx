@@ -1,6 +1,9 @@
 {
+    "on_type": "Query",
     "field_name": "search",
     "function_name": "trialSearchCustomResolver",
+    "input_type_format": "custom",
+    "payload_type_format": "generated-list",
     "input_type": {
         "properties": {
             "filters": {
@@ -9,8 +12,14 @@
                     "bsonType": "string"
                 }
             },
+            "k": {
+                "bsonType": "long"
+            },
             "limit": {
                 "bsonType": "long"
+            },
+            "paginationToken": {
+                "bsonType": "string"
             },
             "skip": {
                 "bsonType": "long"
@@ -18,15 +27,18 @@
             "sort": {
                 "bsonType": "string"
             },
+            "sortOrder": {
+                "bsonType": "string"
+            },
             "term": {
                 "bsonType": "string"
+            },
+            "useVector": {
+                "bsonType": "bool"
             }
         },
         "title": "SearchInput",
         "type": "object"
     },
-    "input_type_format": "custom",
-    "on_type": "Query",
-    "payload_type": "Trial",
-    "payload_type_format": "generated-list"
+    "payload_type": "Trial"
 }
