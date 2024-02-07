@@ -44,6 +44,31 @@
         "enrollment": {
             "bsonType": "int"
         },
+        "facility": {
+            "bsonType": "object",
+            "properties": {
+                "address": {
+                    "bsonType": "object",
+                    "properties": {
+                        "city": {
+                            "bsonType": "string"
+                        },
+                        "country": {
+                            "bsonType": "string"
+                        },
+                        "state": {
+                            "bsonType": "string"
+                        },
+                        "zip": {
+                            "bsonType": "string"
+                        }
+                    }
+                },
+                "name": {
+                    "bsonType": "string"
+                }
+            }
+        },
         "gender": {
             "bsonType": "string"
         },
@@ -126,6 +151,9 @@
             "bsonType": "string"
         },
         "url": {
+            "bsonType": "string"
+        },
+        "trialPaginationToken": {
             "bsonType": "string"
         }
     },
