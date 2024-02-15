@@ -27,7 +27,7 @@
     "@fortawesome/angular-fontawesome": "^0.9.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
-    "@mongodb-js/charts-embed-dom": "^2.1.0",
+    "@mongodb-js/charts-embed-dom": "^2.3.1",
     "@types/autosuggest-highlight": "^3.1.1",
     "@types/googlemaps": "^3.43.3",
     "@types/lodash-es": "^4.17.5",
