@@ -49,6 +49,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
     //console.log(`getting data`);
     this.trialPaginationToken = this.trials[this.trials.length -1].trialPaginationToken;
     if (_.isNull(this.trialPaginationToken) || _.isEmpty(this.trialPaginationToken)) {
+      //console.log("No pagination token found, using skip/limit instead");
       this.searchVariables.searchInput.skip = (Number(this.searchVariables.searchInput.skip) + this.docsPerRequest).toString();
     } else {
       this.searchVariables.searchInput.paginationToken = this.trialPaginationToken;
@@ -140,7 +141,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
   }
 
   onSortClick(event: any, value: any) {
-    console.log(`current: ${this.searchVariables.searchInput.sortOrder}`);
+    //console.log(`current: ${this.searchVariables.searchInput.sortOrder}`);
     if (this.searchVariables.searchInput.sort === value) {
       // TODO: reverse sort order
       this.searchVariables.searchInput.sortOrder =
@@ -148,9 +149,9 @@ export class TrialListComponent implements OnInit, OnDestroy {
     } else {
       // sort order changed -- why isn't onSortOrderChange firing?
       this.searchVariables.searchInput.sortOrder = "";
-      console.log("Sort order changed");
+      //console.log("Sort order changed");
     }
-    console.log(`next: ${this.searchVariables.searchInput.sortOrder}`);
+    //console.log(`next: ${this.searchVariables.searchInput.sortOrder}`);
     this.doSearch(false, "from onSortClick");
     //event.preventDefault();
     //return false;
@@ -395,7 +396,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
           if (keys.indexOf("useVector") >= 0) {
             this.useVectorSearch = params.get('useVector')?.toLowerCase() === 'true';
             this.searchTermService.changeVector(this.useVectorSearch);
-            console.log(`useVectorSearch: ${this.useVectorSearch}`);
+            //console.log(`useVectorSearch: ${this.useVectorSearch}`);
           }
           // existing query params -- add new ones
           let qParam = "";
@@ -502,7 +503,10 @@ export class TrialListComponent implements OnInit, OnDestroy {
   doSearch(append: boolean, msg: string = ""): void {
     //console.log(`doSearch::Current term: ${this.searchVariables.searchInput.term}`);
     this.trialsLoading = true;
-    if (this.searchQuerySubscription) this.searchQuerySubscription.unsubscribe();
+    if (this.searchQuerySubscription) {
+      //console.log("doSearch::Unsubscribing");
+      this.searchQuerySubscription.unsubscribe();
+    }
     this.searchVariables.searchInput.useVector = this.useVectorSearch;
     this.searchQuerySubscription = this.apollo.watchQuery<any>({
       query: this.FIND_TRIALS,
@@ -512,6 +516,7 @@ export class TrialListComponent implements OnInit, OnDestroy {
       .subscribe(({ data, loading }) => {
         this.trialsLoading = loading;
         if (data) {
+          //console.log(`doSearch(append=${append})::${msg}: ${data.search.length} results`);
           if (append) {
             if (this.trials) {
               if (Array.isArray(this.trials) && this.trials?.length >= 0) {
@@ -522,12 +527,12 @@ export class TrialListComponent implements OnInit, OnDestroy {
               }
             } else {
               console.log("trials null - replacing");
-              console.log(`doSearch(append=true)::${msg}: Replacing`);
+              //console.log(`doSearch(append=true)::${msg}: Replacing`);
               //this.trials = data.search;
               this.trials = data.search;
             }
           } else {
-            console.log(`doSearch(append=false)::${msg}: Replacing`);
+            //console.log(`doSearch(append=false)::${msg}: Replacing`);
             this.trials = data.search;
           }
           this.trialsLoading = false;
