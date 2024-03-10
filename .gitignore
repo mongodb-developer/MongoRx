@@ -1,4 +1,5 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
+api_key.txt
 
 # compiled output
 /dist
