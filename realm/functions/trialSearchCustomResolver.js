@@ -10,7 +10,9 @@ exports = async (searchInput) => {
   const cluster = context.services.get("mongodb-atlas");
   const db = cluster.db("ClinicalTrials");
   const trialsCol = db.collection("trials");
-  const endpoint = "https://scalethebrain.com/rest_vector"; // vectoring encoder hosted by engineering/PM. Contact @marcus.eagan for any issues.
+  //const endpoint = "https://scalethebrain.com/rest_vector"; // vectoring encoder hosted by engineering/PM. Contact @marcus.eagan for any issues.
+  const endpoint = "https://f80yfe3klhonp84q.us-east-1.aws.endpoints.huggingface.cloud";
+  const accessToken = context.values.get("hugginface_access_token");
 
   const query = searchInput.term || "";  // TODO: change to no-op filter if no term
   const limit = searchInput.limit || 100;
@@ -156,43 +158,38 @@ exports = async (searchInput) => {
   let vector = [];
   if (useVector) {
     // encode the query
-    const response = await context.http.post({
-      url: endpoint,
-      "headers": {
-        "Content-Type": ["application/json"]
-      },
-      body: { field_to_vectorize: query },
-      encodeBodyAsJSON: true
-    }).then(response => {
-      // The response body is encoded as raw BSON.Binary. Parse it to JSON.
-      const responseBody = EJSON.parse(response.body?.text());
-      if (responseBody) {
-        vector = responseBody.vector;
-        //let httpStatus = (response.status !== undefined) ? parseInt(response.status) : undefined;
-        //console.log(`${httpStatus}: vector: ${vector.slice(0, 4)}`);
-        return responseBody;
-      }
-    });
+    let headers = {
+      "Authorization": ["Bearer " + accessToken],
+      "Content-Type": ["application/json"]
+    };
+    console.log(JSON.stringify(headers, null, 2));
+    vector = await context.functions.execute("createEmbedding", query);
   }
 
   let vectorSearch = {
-    '$search': {
-      'index': 'vector', 
-      'knnBeta': {
-        'vector': vector, 
-        'path': 'detailed_description_vector', 
-        'k': k
-      },
-      "tracking": {
-        "searchTerms": query
-      }
+    '$vectorSearch': {
+      'index': 'trials_vector_index', 
+      'queryVector': vector, 
+      'path': 'detailed_description_vector', 
+      'numCandidates': k,
+      'limit': limit
     }
   };
 
+  // 03/03/20224 RK -- switching to $vectorSearch
+  let vectorSearchWithFilters = {
+    '$vectorSearch': {
+      'index': 'trials_vector_index', 
+      'queryVector': vector, 
+      'path': 'detailed_description_vector', 
+      'numCandidates': k,
+      'limit': limit,
+      'filter': {}
+    }
   // 11/6/20222 RK -- I should be using knnBeta.filter, however, it currently does
   // not support multiple filter expressions (it's declared as a document, not ana. array)
   // The workaround is to use compound.filter for now
-  let vectorSearchWithFilters = {
+    /*
     '$search': {
       'index': 'vector', 
       compound: {
@@ -208,7 +205,7 @@ exports = async (searchInput) => {
       "tracking": {
         "searchTerms": query
       }
-    }
+    }*/
   };
 
   let vectorSearchProject = {
@@ -223,16 +220,18 @@ exports = async (searchInput) => {
       score: {'$meta': 'searchScore'},
       highlights: {'$meta': 'searchHighlights'},
       trialPaginationToken: {'$meta' : 'searchSequenceToken'},
-      count: "$$SEARCH_META.count"
     }
   };
+  if (!useVector) {
+    addFields.$addFields.count = "$$SEARCH_META.count"
+  }
 
   if (rangeQuery) {
     basicSearch.$search.compound.filter.push(rangeQuery);
     basicSearchNoTerm.$search.compound.filter.push(rangeQuery);
     searchNoTermWithFilters.$search.compound.filter.push(rangeQuery);
     searchWithFilters.$search.compound.filter.push(rangeQuery);
-    vectorSearchWithFilters.$search.compound.filter.push(rangeQuery);
+    vectorSearchWithFilters.$vectorSearch.filter = rangeQuery;
   }
 
   let pipeline = [];
@@ -296,11 +295,12 @@ exports = async (searchInput) => {
 
   pipeline.push(addFields);
   if (null != paginationToken && paginationToken.trim().length > 0) {
-    pipeline[0]["$search"].searchBefore = paginationToken;
+    pipeline[0]["$search"].searchAfter = paginationToken;
   } else {
     pipeline.push({'$skip': skip});
   }
   pipeline.push({'$limit': limit});
+  console.log(JSON.stringify(pipeline));
 
   const trials = await trialsCol.aggregate(pipeline).toArray();
   return trials;
@@ -314,7 +314,8 @@ const filtersToQueryString = (filters) => {
   return filters.length == 1 ? filtersNoDates[0] : `(${filtersNoDates.join(') AND (')})`;
 };
 
-const filtersToRangeQuery = (filters) => {
+// TODO: convert to MQL filter
+const filtersToRangeQuery = (filters, useVector) => {
   if (!filters || filters.length === 0) return null;
 
   // skip non-date fields
@@ -333,13 +334,31 @@ const filtersToRangeQuery = (filters) => {
     endDate = new Date(startDate.getTime());
     endDate.setDate(endDate.getDate() + 365);
 
-    let rangeQuery = {
-      range: {
-        path: "start_date",
-        gte: startDate,
-        lt: endDate
-      }
-    };
+    let rangeQuery;
+    
+    if (useVector) {
+      rangeQuery = {
+        range: {
+          path: "start_date",
+          gte: startDate,
+          lt: endDate
+        }
+      };
+    } else {
+      // 3/3/2024 TODO: dates not currently supported in $vectorSearch.filter
+      // https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#atlas-vector-search-pre-filter
+      rangeQuery = {
+      "$and": [{
+        "start_date": {
+          "$gte": startDate
+        }
+      }, {
+        "start_date": {
+          "$lt": endDate
+        }
+      }]
+      };
+    }
 
     return rangeQuery;
   } else {

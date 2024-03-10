@@ -9,12 +9,14 @@ exports = async (facetInput) => {
   const cluster = context.services.get("mongodb-atlas");
   const db = cluster.db("ClinicalTrials");
   const trialsCol = db.collection("trials");
-  const endpoint = "https://scalethebrain.com/rest_vector"; // vectoring encoder hosted by engineering/PM. Contact @marcus.eagan for any issues.
+  //const endpoint = "https://scalethebrain.com/rest_vector"; // vectoring encoder hosted by engineering/PM. Contact @marcus.eagan for any issues.
+  const endpoint = "https://f80yfe3klhonp84q.us-east-1.aws.endpoints.huggingface.cloud";
+  const accessToken = context.values.get("hugginface_access_token");
 
   const query = facetInput.term || "";
   const filters = facetInput.filters ? facetInput.filters : [];
   const queryString = facetInput.filters ? filtersToQueryString(filters) : "";
-  const useVector = facetInput.useVector;
+  const useVector = false; // facetInput.useVector; <= RK 03/04/2024 ignore for now as no current way to facet over vector search results
   const k = facetInput.k || 1000;
   //console.log(`Search term: ${JSON.stringify(query)}`);
   //console.log(`Query string: '${queryString}'`);
@@ -227,23 +229,7 @@ exports = async (facetInput) => {
   let vector = [];
   if (useVector) {
     // encode the query
-    const response = await context.http.post({
-      url: endpoint,
-      "headers": {
-        "Content-Type": ["application/json"]
-      },
-      body: { field_to_vectorize: query },
-      encodeBodyAsJSON: true
-    }).then(response => {
-      // The response body is encoded as raw BSON.Binary. Parse it to JSON.
-      const responseBody = EJSON.parse(response.body?.text());
-      if (responseBody) {
-        vector = responseBody.vector;
-        //let httpStatus = (response.status !== undefined) ? parseInt(response.status) : undefined;
-        //console.log(`${httpStatus}: vector: ${vector.slice(0, 4)}`);
-        return responseBody;
-      }
-    });
+    vector = await context.functions.execute("createEmbedding", query);
   }
 
   console.log("processing query...");
