@@ -6,7 +6,8 @@ import { noop as _noop } from 'lodash-es';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { SearchTermService } from "../services/search-term.service";
 import { Subscription, Observable } from 'rxjs';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+//import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DocumentNode } from 'graphql';
 import { CodeViewDialog } from '../code-view-dialog/code-view-dialog.component';
 

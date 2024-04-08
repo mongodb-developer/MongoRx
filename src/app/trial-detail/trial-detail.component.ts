@@ -8,7 +8,8 @@ import { Observable, of, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { GoogleMap, MapGeocoder } from '@angular/google-maps';
 import { GoogleMapsLoaderService } from '../services/google-maps-loader.service';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+//import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DocumentNode } from 'graphql';
 import { CodeViewDialog } from '../code-view-dialog/code-view-dialog.component';
 
