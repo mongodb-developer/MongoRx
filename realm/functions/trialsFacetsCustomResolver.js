@@ -17,7 +17,7 @@ exports = async (facetInput) => {
   const filters = facetInput.filters ? facetInput.filters : [];
   const queryString = facetInput.filters ? filtersToQueryString(filters) : "";
   const useVector = false; // facetInput.useVector; <= RK 03/04/2024 ignore for now as no current way to facet over vector search results
-  const k = facetInput.k || 1000;
+  const k = facetInput.k;  // || 1000; <== RK 03/14/2024 no longer needed
   //console.log(`Search term: ${JSON.stringify(query)}`);
   //console.log(`Query string: '${queryString}'`);
   //console.log(`Use vector: '${useVector}'`);

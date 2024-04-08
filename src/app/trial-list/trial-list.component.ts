@@ -42,7 +42,8 @@ export class TrialListComponent implements OnInit, OnDestroy {
   }
 
   hasMore = () => {
-    return this.trials || this.trials?.length < this.limit;
+    console.log(`hasMore: ${this.trials?.length} < ${Number(this.searchVariables.searchInput.limit)}`);
+    return this.trials || this.trials?.length < Number(this.searchVariables.searchInput.limit);
   }
 
   getData() {
@@ -50,7 +51,9 @@ export class TrialListComponent implements OnInit, OnDestroy {
     this.trialPaginationToken = this.trials[this.trials.length -1].trialPaginationToken;
     if (_.isNull(this.trialPaginationToken) || _.isEmpty(this.trialPaginationToken)) {
       //console.log("No pagination token found, using skip/limit instead");
-      this.searchVariables.searchInput.skip = (Number(this.searchVariables.searchInput.skip) + this.docsPerRequest).toString();
+      if (Number(this.searchVariables.searchInput.skip) < this.trials.length) {
+        this.searchVariables.searchInput.skip = (Number(this.searchVariables.searchInput.skip) + this.docsPerRequest).toString();
+      }
     } else {
       this.searchVariables.searchInput.paginationToken = this.trialPaginationToken;
     }

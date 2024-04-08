@@ -91,7 +91,7 @@
   <div fxLayout="column" fxFlex class="trial-list">
     <!-- paging and stats -->
     <div class="stats" style="padding-top: 1.5em;" *ngIf="trials && trials.length > 0 && searchVariables.searchInput.term.length == 0 && conditionFilters.length == 0 && interventionFilters.length == 0 && productFilters.length == 0 && sponsorFilters.length == 0 && genderFilters.length == 0 && statusFilters.length == 0 && startDateFilters.length == 0">
-      Showing 1 - {{trials.length | number}} of {{(trials[0].count?.total ? trials[0].count.total : (searchVariables.searchInput.useVector == true ? searchVariables.searchInput.k : trials.length)) | number}}
+      Showing 1 - {{trials.length | number}} of {{(trials[0].count?.total ? trials[0].count.total : trials.length) | number}}
       <div class="code-view-container" style="margin-left: auto">
         <mat-form-field appearance="standard" style="padding-right: 1em;">
           <mat-label>Sort by</mat-label>
@@ -112,7 +112,7 @@
     <div style="padding-top: 1.5em; padding-bottom: 0.5em;"
       *ngIf="searchVariables.searchInput.term.length > 0 || conditionFilters.length > 0 || interventionFilters.length > 0 || productFilters.length > 0 || sponsorFilters.length > 0 || genderFilters.length > 0  || statusFilters.length > 0 || startDateFilters.length > 0">
       <!-- paging and stats -->
-      <span class="stats" *ngIf="trials && trials.length > 0">Showing 1 - {{trials.length | number}} of {{(trials[0].count?.total ? trials[0].count.total : (searchVariables.searchInput.useVector == true ?searchVariables.searchInput.k :  trials.length)) | number}}</span>
+      <span class="stats" *ngIf="trials && trials.length > 0">Showing 1 - {{trials.length | number}} of {{(trials[0].count?.total ? trials[0].count.total : trials.length) | number}}</span>
       <div class="code-view-container" style="margin-left: auto;">
         <mat-form-field appearance="standard" style="padding-right: 1em;">
           <mat-label>Sort by</mat-label>
