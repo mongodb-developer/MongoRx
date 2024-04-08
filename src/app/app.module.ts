@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
+import { NgModule,NO_ERRORS_SCHEMA,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+//import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { OrderModule } from 'ngx-order-pipe';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -44,6 +44,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 //import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { MatTabsModule } from '@angular/material/tabs';
+import { OrderByPipe } from './orderby.pipe';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     DashboardComponent,
     DrugDetailComponent,
     DrugListComponent,
+    OrderByPipe,
     ScrollContainerComponent,
     TrialDetailComponent,
     TrialListComponent,
@@ -85,7 +87,10 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatSelectModule,
     MatSlideToggleModule,
     MatTabsModule,
-    OrderModule,
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA,
+    NO_ERRORS_SCHEMA
   ],
   providers: [
     SearchTermService

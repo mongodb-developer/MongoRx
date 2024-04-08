@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "^17.3.3",
     "@angular/router": "^17.3.3",
     "@apollo/client": "^3.0.0",
-    "@fortawesome/angular-fontawesome": "^0.9.0",
+    "@fortawesome/angular-fontawesome": "^0.14.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@mongodb-js/charts-embed-dom": "^2.3.1",
@@ -36,7 +36,6 @@
     "graphql": "^15.0.0",
     "jslint": "^0.12.1",
     "lodash-es": "^4.17.21",
-    "ngx-order-pipe": "^2.1.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.4"

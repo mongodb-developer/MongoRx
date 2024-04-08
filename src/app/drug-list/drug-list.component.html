@@ -63,7 +63,7 @@
         *ngIf="drugs && drugs.length > 0 && searchVariables.drugSearchInput.term.length == 0 && manufacturerFilters.length == 0">
         Showing 1 - {{drugs.length | number}} of {{drugs[0].count.total | number}}
         <div class="code-view-container" style="margin-left: 50vw;">
-          <mat-form-field appearance="standard" style="padding-right: 1em;">
+          <mat-form-field appearance="fill" style="padding-right: 1em;">
             <mat-label>Sort by</mat-label>
             <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)" disableOptionCentering panelClass="sortPanelClass">
               <mat-option *ngFor="let option of sortOptions" [value]="option.field">{{option.label}}</mat-option>
@@ -78,7 +78,7 @@
         <!-- paging and stats -->
         <span class="stats" *ngIf="drugs && drugs.length > 0">Showing 1 - {{drugs.length | number}} of {{drugs[0].count.total | number}}</span>
         <div class="code-view-container">
-          <mat-form-field appearance="standard" style="padding-right: 1em;">
+          <mat-form-field appearance="fill" style="padding-right: 1em;">
             <mat-label>Sort by</mat-label>
             <mat-select [(value)]="sortOrder" (selectionChange)="onSortOrderChange($event.value)" disableOptionCentering panelClass="sortPanelClass">
               <mat-option *ngFor="let option of sortOptions" [value]="option.field">{{option.label}}</mat-option>
