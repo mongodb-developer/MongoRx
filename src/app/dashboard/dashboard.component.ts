@@ -4,7 +4,7 @@ import { faFlask, faMedkit, faPlus, faStethoscope, faUserPlus } from '@fortaweso
 import { fromEvent, Subscription } from 'rxjs';
 
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { DocumentNode } from 'graphql';
 import { CodeViewDialog } from '../code-view-dialog/code-view-dialog.component';
 

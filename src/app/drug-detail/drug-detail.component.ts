@@ -6,7 +6,7 @@ import { noop as _noop } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { DocumentNode } from 'graphql';
 import { CodeViewDialog } from '../code-view-dialog/code-view-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 
 @Component({
   selector: 'app-drug-detail',

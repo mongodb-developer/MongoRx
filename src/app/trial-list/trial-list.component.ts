@@ -2,7 +2,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { faFlask, faMedkit, faPlus, faStethoscope, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { map } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { noop as _noop } from 'lodash-es';
 import * as _ from 'lodash';
 import { Router, ActivatedRoute, ParamMap, Params } from '@angular/router';
