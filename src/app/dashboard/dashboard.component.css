@@ -13,7 +13,7 @@
   width: 80%;
 }
 
-.mat-card-header {
+.mat-mdc-card-header {
   padding-bottom: 0.5em !important;
 }
 
@@ -125,11 +125,11 @@ a h2 span {
   float: right !important;
 }
 
-.mat-card-header {
+.mat-mdc-card-header  {
   display: flex;
   justify-content: space-between;
 }
 
-.mat-card-header > .code-view-container {
+.mat-mdc-card-header > .code-view-container {
   margin-top: -0.5em;
 }

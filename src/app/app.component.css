@@ -19,11 +19,11 @@
   vertical-align: middle !important;
 }
 
-.mat-tab-nav-bar {
+.mat-mdc-tab-header {
   background: #003430 !important;
 }
 
-.mat-tab-link {
+.mat-mdc-tab-link .mdc-tab__text-label {
   color: #fff !important;
   opacity: 1 !important;
   text-transform: uppercase !important;
@@ -38,13 +38,19 @@
   background: #00684b !important;
 }
 
-.mat-tab-label-active {
+/*.mat-tab-label-active*/.mdc-tab--active {
   background: #00684b !important;
 }
 
-.mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-thumb, .mat-flat-button.mat-primary, .mat-raised-button.mat-primary, .mat-fab.mat-primary, .mat-mini-fab.mat-primary {
+.mat-mdc-unelevated-button.mat-primary {
   background-color: rgb(17, 97, 73) !important;
 }
+
+.mat-mdc-slide-toggle.mat-primary.mat-mdc-slide-toggle-checked .mdc-switch.mdc-switch--selected.mdc-switch--checked .mdc-switch__handle .mdc-switch__icons .mdc-switch__icon.mdc-switch__icon--on svg path {
+  fill: rgb(17, 97, 73) !important;
+  fill-opacity: 1;
+}
+
 .mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-bar {
   background-color: #d9ead3ff !important;
 }
@@ -62,7 +68,7 @@ mat-ink-bar.mat-ink-bar {
   visibility: hidden !important;
 }
 
-.mat-flat-button {
+.mat-mdc-unelevated-button {
   height: 40px !important;
   width: 100px !important;
   font-weight: 400 !important;
